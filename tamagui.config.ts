@@ -51,24 +51,25 @@ export const Subtitle = styled(SizableText, {
 });
 
 export const Button = styled(ButtonTamagui, {
-  backgroundColor: '#6366F1',
-  borderRadius: 28,
+  backgroundColor: '#4b61dc',
+  borderRadius: 24,
   hoverStyle: {
-    backgroundColor: '#5a5fcf',
+    backgroundColor: '#7887da',
   },
   pressStyle: {
-    backgroundColor: '#5a5fcf',
+    backgroundColor: '#7887da',
   },
   maxWidth: 500,
+  height: 50,
 
   // Shaddows
-  shadowColor: '#000',
+/*   shadowColor: '#000',
   shadowOffset: {
     height: 2,
     width: 0,
   },
   shadowOpacity: 0.25,
-  shadowRadius: 3.84,
+  shadowRadius: 3.84, */
 
   // Button text
   color: '#FFFFFF',
@@ -81,6 +82,12 @@ const config = createTamagui({
     color: {
       background: 'gray',
       text: 'black',
+    },
+  },
+  dark: {
+    color: {
+      background: '#18181B',
+      text: 'white',
     },
   },
   defaultFont: 'body',
