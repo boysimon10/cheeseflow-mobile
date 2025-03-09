@@ -3,7 +3,7 @@ import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
-import { createTamagui, styled, SizableText, H1, YStack, Button as ButtonTamagui } from 'tamagui';
+import { createTamagui, styled, SizableText, H1, YStack, Button as ButtonTamagui, Input as InputTamagui } from 'tamagui';
 
 const animations = createAnimations({
   bouncy: {
@@ -75,6 +75,21 @@ export const Button = styled(ButtonTamagui, {
   color: '#FFFFFF',
   fontWeight: '600', // Is not passed down to the text. Probably a bug in Tamagui: https://github.com/tamagui/tamagui/issues/1156#issuecomment-1802594930
   fontSize: 16,
+});
+
+export const Input = styled(InputTamagui, {
+  backgroundColor: 'white',
+  borderRadius: 24,
+  borderWidth: 1,
+  borderColor: '#E2E8F0',
+  height: 50,
+  paddingHorizontal: 16,
+  fontSize: 16,
+  fontWeight: '600',
+  marginBottom: '$4',
+  
+  // Placeholder styling
+  placeholderTextColor: '#9CA3AF',
 });
 
 const config = createTamagui({

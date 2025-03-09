@@ -6,21 +6,15 @@ import { Input } from '~/components/Input';
 
 /* type ScreenContentProps = {
   title: string;
-   children?: React.ReactNode; 
+    children?: React.ReactNode; 
 }; */
 
 export const ScreenContent = () => {
   return (
     <Theme name="light">
+    
       <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-        <Image 
-          source={require('../../assets/onboarding/mobile-app.png')}
-          width={210}
-          height={210}
 
-          marginTop="$10"
-
-        />
 
       <View
           flex={1}
@@ -48,29 +42,43 @@ export const ScreenContent = () => {
               Sign in to continue
             </Text>
             <Input
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-
-            <Input
-              placeholder="Password"
-              secureTextEntry
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-
-            <Link href={{ pathname: '/'}} asChild>
-              <Button title="Login" marginBottom={"$4"}/>
+            placeholder="Full Name"
+            autoCapitalize="words"
+            autoCorrect={false}
+          />
+          
+          <Input
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          
+          <Input
+            placeholder="Password"
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          
+          <Input
+            placeholder="Confirm Password"
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          
+          <Link href={{ pathname: '/'}} asChild>
+            <Button title="Register" marginBottom={"$4"}/>
+          </Link>
+          
+          <View paddingBottom={"$4"}>
+            <Link href={{ pathname: '/' }} asChild>
+              <Text color={"#4b61dc"} textAlign='center'>
+                Already have an account? Sign in
+              </Text>
             </Link>
-            <View paddingBottom={"$4"}>
-              <Link href={{ pathname: '/register' }} asChild>
-                <Text color={"#4b61dc"} textAlign='center'>
-                  Don't have an account? Sign up
-                </Text>
-              </Link>
-            </View>
+          </View>
         </View>
         </YStack>
     </Theme>
