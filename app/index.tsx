@@ -1,7 +1,7 @@
 import { Stack, Link } from 'expo-router';
 
-import { Container } from '~/components/Home/Container';
-import { ScreenContent } from '~/components/Home/ScreenContent';
+import { Container } from '~/components/Home/HomeContainer';
+import { ScreenContent } from '~/components/Home/HomeScreenContent';
 
 export default function Home() {
   return (

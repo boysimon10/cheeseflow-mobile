@@ -79,13 +79,13 @@ export const Button = styled(ButtonTamagui, {
 
 export const Input = styled(InputTamagui, {
   backgroundColor: 'white',
-  borderRadius: 24,
+  borderRadius: 10,
   borderWidth: 1,
   borderColor: '#E2E8F0',
   height: 50,
   paddingHorizontal: 16,
   fontSize: 16,
-  fontWeight: '600',
+  fontWeight: '500',
   marginBottom: '$4',
   
   // Placeholder styling
@@ -97,12 +97,6 @@ const config = createTamagui({
     color: {
       background: 'gray',
       text: 'black',
-    },
-  },
-  dark: {
-    color: {
-      background: '#18181B',
-      text: 'white',
     },
   },
   defaultFont: 'body',

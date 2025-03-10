@@ -21,7 +21,9 @@ export default function Layout() {
 
   return (
     <TamaguiProvider config={config}>
-      <Stack />
+      <Stack> 
+        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+      </Stack>
     </TamaguiProvider>
   );
 }

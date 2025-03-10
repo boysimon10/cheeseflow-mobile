@@ -2,7 +2,9 @@ import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text } from 'tama
 import { Link } from 'expo-router';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Dimensions } from 'react-native';
+import { EnvelopeIcon, LockClosedIcon } from 'react-native-heroicons/outline';
 
 /* type ScreenContentProps = {
   title: string;
@@ -10,26 +12,32 @@ import { Input } from '~/components/Input';
 }; */
 
 export const ScreenContent = () => {
+  const { bottom, top } = useSafeAreaInsets();
+  const screenHeight = Dimensions.get('window').height;
+  const minSpacing = Math.min(screenHeight * 0.5, -10);
+
   return (
     <Theme name="light">
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-        <Image 
-          source={require('../../assets/onboarding/mobile-app.png')}
-          width={210}
-          height={210}
-
-          marginTop="$10"
-
-        />
-
-      <View
-          flex={1}
-          width={"100%"}
-          padding={"$4"}
-          borderRadius={"$10"}
-          backgroundColor={'#dde3fb'}
-          marginTop={"$5"}
+      <YStack flex={1} padding="$4" space={minSpacing}>
+        <YStack 
+          flex={1} 
+          alignItems="center" 
+          justifyContent="center" 
+          paddingTop={top}
         >
+          <Image 
+            source={require('../../assets/onboarding/mobile-app.png')}
+            width={250}
+            height={250}
+          />
+        </YStack>
+
+        <YStack paddingBottom={bottom}>
+          <View
+            padding={"$4"}
+            borderRadius={"$10"}
+            backgroundColor={'#dde3fb'}
+          >
             <Text
               fontSize={32}
               fontWeight={"bold"}
@@ -52,6 +60,7 @@ export const ScreenContent = () => {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              icon={<EnvelopeIcon size={20} color="#9CA3AF" />}
             />
 
             <Input
@@ -59,9 +68,10 @@ export const ScreenContent = () => {
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
+              icon={<LockClosedIcon size={20} color="#9CA3AF" />}
             />
 
-            <Link href={{ pathname: '/'}} asChild>
+            <Link href={{ pathname: '/(authenticated)/(tabs)'}} asChild>
               <Button title="Login" marginBottom={"$4"}/>
             </Link>
             <View paddingBottom={"$4"}>
@@ -72,6 +82,7 @@ export const ScreenContent = () => {
               </Link>
             </View>
         </View>
+        </YStack>
         </YStack>
     </Theme>
   );
