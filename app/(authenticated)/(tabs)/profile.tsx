@@ -1,12 +1,10 @@
-import { Stack, Link } from 'expo-router';
-import { View, Text } from 'tamagui';
+import { Stack } from 'expo-router';
 
 
 export default function Profile() {
   return (
     <>
         <Stack.Screen options={{ headerShown: false }}  />
-
 
     </>
   );

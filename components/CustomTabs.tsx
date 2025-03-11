@@ -2,6 +2,7 @@ import { TouchableOpacity, ViewStyle } from 'react-native';
 import { Text } from '@react-navigation/elements';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { XStack, YStack } from 'tamagui';
+import * as Haptics from 'expo-haptics';
 
 export default function CustomTabs({ state, descriptors, navigation }: BottomTabBarProps) {
     return (
@@ -63,7 +64,10 @@ export default function CustomTabs({ state, descriptors, navigation }: BottomTab
                 accessibilityState={isFocused ? { selected: true } : {}}
                 accessibilityLabel={options.tabBarAccessibilityLabel}
                 testID={options.tabBarButtonTestID}
-                onPress={onPress}
+                onPress={() => {
+                    Haptics.selectionAsync();
+                    onPress();
+                }}
                 onLongPress={onLongPress}
                 style={{ 
                 flex: 1,

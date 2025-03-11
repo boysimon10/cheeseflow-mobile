@@ -1,9 +1,9 @@
 import { Stack, Link } from 'expo-router';
 
-import { Container } from '~/components/Home/HomeContainer';
-import { ScreenContent } from '~/components/Home/HomeScreenContent';
+import { Container } from '~/components/Welcome/WelcomeContainer';
+import { ScreenContent } from '~/components/Welcome/WelcomeScreenContent';
 
-export default function Home() {
+export default function Welcome() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }}  />

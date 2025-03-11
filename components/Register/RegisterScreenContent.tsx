@@ -14,10 +14,29 @@ import {
   KeyIcon
 } from 'react-native-heroicons/outline';
 import { useRouter } from 'expo-router';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import CurrencyBottomSheet from '~/components/Register/CurrencyBottomSheet';
+import { useRef, useState } from 'react';
+import { CurrencyType, currencyDescriptions, currencySymbols } from '../../constants/currencies';
+
 
 export const ScreenContent = () => {
   const { bottom, top } = useSafeAreaInsets();
   const router = useRouter();
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType | undefined>(undefined);
+  const [currencyDisplayText, setCurrencyDisplayText] = useState('Select Currency');
+  
+  const handleOpenBottomSheet = () => {
+    bottomSheetRef.current?.present(); 
+  };
+  
+  const handleClosePress = () => bottomSheetRef.current?.dismiss();
+  
+  const handleSelectCurrency = (currency: CurrencyType) => {
+    setSelectedCurrency(currency);
+    setCurrencyDisplayText(`${currency} - ${currencyDescriptions[currency]}`);
+  };
 
   return (
     <Theme name="light">
@@ -84,14 +103,13 @@ export const ScreenContent = () => {
             
             {/* Currency Selector */}
             <Input
-              placeholder="Select Currency"
+              placeholder={currencyDisplayText}
               autoCapitalize="none"
               autoCorrect={false}
               icon={<CurrencyDollarIcon size={20} color="#9CA3AF" />}
-              onPressIn={() => {
-                // Ici vous pouvez ouvrir un modal ou naviguer vers une page de sélection de devise
-              }}
+              onPress={() => handleOpenBottomSheet()}
               editable={false}
+              value={currencyDisplayText !== "Select Currency" ? currencyDisplayText : ""}
             />
             
             <Input
@@ -124,6 +142,12 @@ export const ScreenContent = () => {
           </View>
         </YStack>
       </YStack>
+      <CurrencyBottomSheet 
+        ref={bottomSheetRef} 
+        onClose={handleClosePress}
+        onSelect={handleSelectCurrency}
+        selectedCurrency={selectedCurrency}
+      />
     </Theme>
   );
 };

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { HomeIcon, ChartBarIcon, UserIcon } from 'react-native-heroicons/mini';
+import { HomeIcon, ChartBarIcon, UserIcon, ArrowsRightLeftIcon } from 'react-native-heroicons/mini';
 import CustomTabs from '../../../components/CustomTabs';
 
 export default function TabLayout() {
@@ -14,21 +14,28 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <HomeIcon size={24} color={color} />,
+          tabBarIcon: ({ color }) => <HomeIcon size={26} color={color} />,
         }}
       />
+        <Tabs.Screen
+          name="transactions"
+          options={{
+            title: 'Transactions',
+            tabBarIcon: ({ color }) => <ArrowsRightLeftIcon size={26} color={color} />,
+          }}
+        />
       <Tabs.Screen
         name="statistics"
         options={{
           title: 'Statistics',
-          tabBarIcon: ({ color }) => <ChartBarIcon size={24} color={color} />,
+          tabBarIcon: ({ color }) => <ChartBarIcon size={26} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <UserIcon size={24} color={color} />,
+          tabBarIcon: ({ color }) => <UserIcon size={26} color={color} />,
         }}
       />
     </Tabs>

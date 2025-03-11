@@ -2,6 +2,8 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { TamaguiProvider } from 'tamagui';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import config from '../tamagui.config';
 
@@ -20,10 +22,14 @@ export default function Layout() {
   if (!loaded) return null;
 
   return (
-    <TamaguiProvider config={config}>
-      <Stack> 
-        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
-      </Stack>
-    </TamaguiProvider>
+    <GestureHandlerRootView>
+      <TamaguiProvider config={config}>
+        <BottomSheetModalProvider>
+          <Stack> 
+            <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+          </Stack>
+        </BottomSheetModalProvider>
+      </TamaguiProvider>
+    </GestureHandlerRootView>
   );
 }
