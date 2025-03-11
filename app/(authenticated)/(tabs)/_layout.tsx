@@ -1,17 +1,12 @@
 import { Tabs } from 'expo-router';
-import { HomeIcon, ChartBarIcon, UserIcon } from 'react-native-heroicons/outline';
+import { HomeIcon, ChartBarIcon, UserIcon } from 'react-native-heroicons/mini';
+import CustomTabs from '../../../components/CustomTabs';
 
 export default function TabLayout() {
   return (
     <Tabs
+      tabBar={props => <CustomTabs {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: '#4b61dc',
-        tabBarInactiveTintColor: '#9CA3AF',
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
-        },
         headerShown: false,
       }}
     >
