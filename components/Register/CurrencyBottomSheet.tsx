@@ -83,7 +83,7 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
       return (
         <TouchableOpacity
           onPress={() => handleSelectCurrency(item)}
-          style={{ paddingHorizontal: 8, marginBottom: 8 }}
+          style={{ paddingHorizontal: 4, marginBottom: 8 }}
         >
           <XStack
             borderWidth={1}
@@ -125,7 +125,7 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
           index={0}
           snapPoints={snapPoints}
           backdropComponent={renderBackdrop}
-          enableDismissOnClose={true}
+          enableContentPanningGesture={false}  // Disable content panning
           handleComponent={() => (
             <Stack paddingVertical={12} width="100%" alignItems="center">
               <HandleBar />
@@ -133,7 +133,7 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
           )}
           backgroundStyle={{ backgroundColor: "#FFFFFF" }}
         >
-          <BottomSheetView style={{ flex: 1, paddingBottom: 96 }}>
+          <BottomSheetView style={{ flex: 1, paddingBottom: 200 }}>
             <YStack paddingHorizontal={24} flex={1}>
               <XStack justifyContent="space-between" alignItems="center" marginBottom={16}>
                 <TitleText>Select Currency</TitleText>
