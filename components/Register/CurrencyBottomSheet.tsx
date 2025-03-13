@@ -125,16 +125,15 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
           index={0}
           snapPoints={snapPoints}
           backdropComponent={renderBackdrop}
-          enableContentPanningGesture={false}  // Disable content panning
-          handleComponent={() => (
-            <Stack paddingVertical={12} width="100%" alignItems="center">
-              <HandleBar />
-            </Stack>
-          )}
+          enableContentPanningGesture={false}
+          enableHandlePanningGesture={false}
+          enableOverDrag={false}
+          enablePanDownToClose={true}
+          handleComponent={null}
           backgroundStyle={{ backgroundColor: "#FFFFFF" }}
         >
           <BottomSheetView style={{ flex: 1, paddingBottom: 200 }}>
-            <YStack paddingHorizontal={24} flex={1}>
+            <YStack paddingHorizontal={24} flex={1} paddingTop={8}>
               <XStack justifyContent="space-between" alignItems="center" marginBottom={16}>
                 <TitleText>Select Currency</TitleText>
                 <TouchableOpacity 

@@ -65,7 +65,7 @@ export const ScreenContent = () => {
             padding={"$4"}
             borderRadius={"$10"}
             backgroundColor={'#dde3fb'}
-            marginTop={"$4"}
+            marginTop={"$2"}
             
           >
             <Text
