@@ -11,6 +11,8 @@ export default function CustomTabs({ state, descriptors, navigation }: BottomTab
         height={70} 
         backgroundColor="white"
         borderRadius={28}
+        //borderTopStartRadius={24}
+        //borderTopEndRadius={24}
         marginHorizontal="5%"
         marginBottom={16}
         position="absolute"

@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { BalanceCard } from './BalanceCard';
 import { TransactionCard } from './TransactionCard';
+import { CategoryCard } from './CategoryCard';
 
 
 export const ScreenContent = () => {
@@ -18,7 +19,7 @@ export const ScreenContent = () => {
     <Theme name="light">
         <YStack flex={1} padding="$4" space={minSpacing}>
             <XStack 
-                paddingVertical="$3"
+                paddingVertical="$2"
                 justifyContent="space-between"
                 alignItems="center"
                 width="100%"
@@ -51,8 +52,33 @@ export const ScreenContent = () => {
                     <MagnifyingGlassIcon size={25} color="#4b61dc" />
                 </TouchableOpacity>
             </XStack>
-            <YStack>
+            <ScrollView 
+
+                    showsVerticalScrollIndicator={false}
+            >
+            <YStack paddingTop="$4">
                 <BalanceCard />
+                {/* <XStack 
+                        justifyContent="space-between" 
+                        alignItems="center"
+                        paddingVertical="$2"
+                    >
+                        <Text
+                            fontSize={18}
+                            fontWeight="700"
+                            color="#4b61dc"
+                        >
+                            Categories
+                        </Text>
+                        <TouchableOpacity onPress={() => {Haptics.selectionAsync();}}>
+                            <Text
+                                fontSize={14}
+                                color="#4b61dc"
+                            >
+                                See all
+                            </Text>
+                        </TouchableOpacity>
+                    </XStack>
                 <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -66,51 +92,38 @@ export const ScreenContent = () => {
                         paddingBottom: 16,
                     }}
                 >
-                <YStack
-                        backgroundColor="#4b61dc"
-                        borderRadius={20}
+                    <CategoryCard />
+                </ScrollView> */}
+                <YStack space={6}>
+                    <XStack 
+                        justifyContent="space-between" 
+                        alignItems="center"
+                        paddingVertical="$2"
+                        paddingTop="$4"
                     >
-                    <YStack
-                        margin={15}
-                    >
-                        <View
-                            width={35}
-                            height={35}
-                            borderRadius={100}
-                            backgroundColor={"#fff"}
+                        <Text
+                            fontSize={18}
+                            fontWeight="700"
+                            color="#4b61dc"
                         >
-                        </View>
-                            <YStack
-                            paddingTop={10}
+                            Recent Transactions
+                        </Text>
+                        <TouchableOpacity onPress={() => {Haptics.selectionAsync();}}>
+                            <Text
+                                fontSize={14}
+                                color="#4b61dc"
                             >
-                                <Text
-                                    fontSize={14}
-                                    fontWeight="400"
-                                    color="white"
-                                >
-                                    Nourritures
-                                </Text>
-                                <Text
-                                    fontSize={18}
-                                    fontWeight="700"
-                                    color="white"
-                                >
-                                    10000 F CFA
-                                </Text>
-                            </YStack>
-                    </YStack>
-                </YStack>
-                </ScrollView>
-                <YStack
-                    space={10}
-
-                >
+                                See all
+                            </Text>
+                        </TouchableOpacity>
+                    </XStack>
                     <TransactionCard />
                     <TransactionCard />
                     <TransactionCard />
-
+                    <TransactionCard />
                 </YStack>
             </YStack>
+            </ScrollView>
         </YStack>
     </Theme>
     );

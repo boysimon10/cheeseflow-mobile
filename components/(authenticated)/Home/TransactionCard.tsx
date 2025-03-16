@@ -3,9 +3,9 @@ import { View, XStack, Text, YStack } from "tamagui"
 export const TransactionCard = () => {
     return (
         <XStack
-            backgroundColor={"#dde3fb"}
-            borderRadius={12}
-            padding={"$3"}
+            backgroundColor={"#fff"}
+            borderRadius={16}
+            padding={"$4"}
             justifyContent="space-between"
             alignItems="center"
         >
@@ -14,9 +14,14 @@ export const TransactionCard = () => {
             <View
                 width={35}
                 height={35}
-                borderRadius={100}
-                backgroundColor={"#fff"}
+                backgroundColor="#dde3fb"
+                borderRadius={8}
+                alignItems="center"
+                justifyContent="center"
             >
+                <Text>
+                🍔
+                </Text>
             </View>
                 <YStack
                 paddingLeft={"$2"}
@@ -32,7 +37,7 @@ export const TransactionCard = () => {
                         fontSize={12}
                         color={"#4b61dc"}
                     >
-                        12/02/2025
+                        Mon, Feb 12
                     </Text>
                 </YStack>
             </XStack>
