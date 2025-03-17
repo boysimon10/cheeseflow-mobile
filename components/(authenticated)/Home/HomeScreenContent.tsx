@@ -56,7 +56,7 @@ export const ScreenContent = () => {
 
                     showsVerticalScrollIndicator={false}
             >
-            <YStack paddingTop="$4">
+            <YStack paddingTop="$2">
                 <BalanceCard />
                 {/* <XStack 
                         justifyContent="space-between" 
@@ -100,6 +100,7 @@ export const ScreenContent = () => {
                         alignItems="center"
                         paddingVertical="$2"
                         paddingTop="$4"
+                        paddingHorizontal={"$2"}
                     >
                         <Text
                             fontSize={18}

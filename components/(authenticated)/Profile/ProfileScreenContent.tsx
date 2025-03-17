@@ -21,7 +21,7 @@ export const ScreenContent = () => {
                     width="100%"
                 >
                     <Text
-                        fontSize={24}
+                        fontSize={30}
                         fontWeight="700"
                         color="#4b61dc"
                     >
