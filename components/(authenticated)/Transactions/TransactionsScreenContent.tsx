@@ -15,7 +15,6 @@ export const ScreenContent = () => {
     return (
         <Theme name="light">
             <YStack flex={1}  space={minSpacing}>
-                {/* Header Title */}
                 <XStack
                     paddingHorizontal="$3"
                     paddingTop="$6"
@@ -34,7 +33,6 @@ export const ScreenContent = () => {
                     </Text>
                 </XStack>
                 
-                {/* Tab Navigator takes remaining space */}
                 <YStack flex={1}>
                     <Tab.Navigator
                         screenOptions={{
