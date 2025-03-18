@@ -5,8 +5,10 @@ import { Dimensions, TouchableOpacity } from 'react-native';
 import { TransactionCard } from '../Home/TransactionCard';
 import { TransactionItem } from './TransactionItem';
 import { PlusIcon } from "react-native-heroicons/outline";
+import { useRouter } from 'expo-router';
 
 export const TransactionsTopTabsScreen = () => {
+    const router = useRouter();
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
@@ -65,7 +67,7 @@ export const TransactionsTopTabsScreen = () => {
                         </XStack>
                         
                         {/* Add Transaction Button */}
-                        <TouchableOpacity onPress={() => console.log('Add transaction')}>
+                        <TouchableOpacity onPress={() => router.push('/NewTransaction')}>
                             <View
                                 backgroundColor="#4b61dc"
                                 borderRadius="$10"

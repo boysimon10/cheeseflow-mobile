@@ -1,5 +1,5 @@
 import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text, XStack, ScrollView } from 'tamagui';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions, TouchableOpacity } from 'react-native';
 import { TransactionCard } from '../Home/TransactionCard';
@@ -7,6 +7,7 @@ import { CategoryItem } from './CategoryItem';
 import { PlusIcon } from 'react-native-heroicons/outline';
 
 export const CategoriesTopTabsScreen = () => {
+    const router = useRouter();
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
@@ -65,7 +66,7 @@ export const CategoriesTopTabsScreen = () => {
                             </TouchableOpacity>
                         </XStack>
                         {/* Add Transaction Button */}
-                        <TouchableOpacity onPress={() => console.log('Add transaction')}>
+                        <TouchableOpacity onPress={() => router.push('/NewCategory')}>
                             <View
                                 backgroundColor="#4b61dc"
                                 borderRadius="$10"
