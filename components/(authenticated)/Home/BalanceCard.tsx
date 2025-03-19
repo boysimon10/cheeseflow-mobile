@@ -2,8 +2,10 @@ import { XStack, YStack, Text } from 'tamagui';
 import { TouchableOpacity } from 'react-native';
 import { PlusIcon } from 'react-native-heroicons/outline';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router'
 
 export const BalanceCard = () => {
+    const router = useRouter();
     return (
         <XStack
             backgroundColor={"#dde3fb"}
@@ -42,7 +44,7 @@ export const BalanceCard = () => {
                     borderRadius: 1000,
                     alignSelf: 'flex-start'
                 }}
-                onPress={() => {Haptics.selectionAsync();}}
+                onPress={() => {Haptics.selectionAsync(), router.push('/NewTransaction')}}
             >
                 <PlusIcon size={25} color="#4b61dc" />
             </TouchableOpacity>

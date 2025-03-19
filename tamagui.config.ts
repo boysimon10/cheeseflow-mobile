@@ -95,7 +95,7 @@ export const Input = styled(InputTamagui, {
 const config = createTamagui({
   light: {
     color: {
-      background: '#fff',
+      background: 'white',
       text: 'black',
     },
   },

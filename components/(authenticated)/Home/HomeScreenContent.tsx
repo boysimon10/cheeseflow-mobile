@@ -101,7 +101,6 @@ export const ScreenContent = () => {
                         alignItems="center"
                         paddingVertical="$2"
                         paddingTop="$4"
-                        paddingHorizontal={"$2"}
                     >
                         <Text
                             fontSize={18}
@@ -113,6 +112,7 @@ export const ScreenContent = () => {
                         <TouchableOpacity onPress={() => {Haptics.selectionAsync();}}>
                             <Text
                                 fontSize={14}
+                                fontWeight={"500"}
                                 color="#4b61dc"
                             >
                                 See all
