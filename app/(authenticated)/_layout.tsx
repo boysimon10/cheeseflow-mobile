@@ -9,6 +9,7 @@ export default function AuthLayout() {
         presentation: "modal",
         animation: "slide_from_bottom",
         contentStyle: { backgroundColor: 'white' }}}/>
+        <Stack.Screen name="transaction/[id]" options={{ headerShown: false }}  />
     </Stack>
   );
 }

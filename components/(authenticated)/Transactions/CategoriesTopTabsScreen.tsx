@@ -5,9 +5,11 @@ import { Dimensions, TouchableOpacity } from 'react-native';
 import { TransactionCard } from '../Home/TransactionCard';
 import { CategoryItem } from './CategoryItem';
 import { PlusIcon } from 'react-native-heroicons/outline';
+import { useFilterStore } from '~/store/useFilterStore';
 
 export const CategoriesTopTabsScreen = () => {
     const router = useRouter();
+    const { categoryFilter, setCategoryFilter } = useFilterStore();
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
@@ -31,45 +33,54 @@ export const CategoriesTopTabsScreen = () => {
                         alignItems="center"
                     >
                         {/* Filter Options */}
-                        <XStack space="$2">
-                            <TouchableOpacity>
-                                <View
-                                    backgroundColor="#4b61dc"
-                                    borderRadius="$10"
-                                    paddingHorizontal="$4"
-                                    paddingVertical="$2"
-                                >
-                                    <Text color="white">All</Text>
-                                </View>
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity>
-                                <View
-                                    backgroundColor="white"
-                                    borderRadius="$10"
-                                    paddingHorizontal="$4"
-                                    paddingVertical="$2"
-                                >
-                                    <Text color="#4b61dc">Income</Text>
-                                </View>
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity>
-                                <View
-                                    backgroundColor="white"
-                                    borderRadius="$10"
-                                    paddingHorizontal="$4"
-                                    paddingVertical="$2"
-                                >
-                                    <Text color="#4b61dc">Expense</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </XStack>
+                    <XStack space="$2">
+                        <TouchableOpacity onPress={() => setCategoryFilter('ALL')}>
+                            <View
+                                backgroundColor={categoryFilter === 'ALL' ? "#4b61dc" : "white"}
+                                borderRadius="$10"
+                                paddingHorizontal="$4"
+                                paddingVertical="$2"
+                            >
+                                <Text 
+                                color={categoryFilter === 'ALL' ? "white" : "#4b61dc"}
+                                fontSize={14}
+                                >All</Text>
+                            </View>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity onPress={() => setCategoryFilter('INCOME')}>
+                            <View
+                                backgroundColor={categoryFilter === 'INCOME' ? "#4b61dc" : "white"}
+                                borderRadius="$10"
+                                paddingHorizontal="$4"
+                                paddingVertical="$2"
+                            >
+                                <Text 
+                                color={categoryFilter === 'INCOME' ? "white" : "#4b61dc"}
+                                fontSize={14}
+                                >Income</Text>
+                            </View>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity onPress={() => setCategoryFilter('EXPENSE')}>
+                            <View
+                                backgroundColor={categoryFilter === 'EXPENSE' ? "#4b61dc" : "white"}
+                                borderRadius="$10"
+                                paddingHorizontal="$4"
+                                paddingVertical="$2"
+                            >
+                                <Text 
+                                color={categoryFilter === 'EXPENSE' ? "white" : "#4b61dc"}
+                                fontSize={14}
+                                >Expense</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </XStack>
                         {/* Add Transaction Button */}
                         <TouchableOpacity onPress={() => router.push('/NewCategory')}>
                             <View
                                 backgroundColor="#4b61dc"
-                                borderRadius="$10"
+                                borderRadius="$5"
                                 width={36}
                                 height={36}
                                 alignItems="center"

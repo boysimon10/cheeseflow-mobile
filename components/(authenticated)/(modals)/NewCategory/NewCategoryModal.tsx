@@ -110,9 +110,9 @@ export const ModalContent = ()=> {
                     style={{ flex: 1 }}
                     >
                     <View
-                        backgroundColor={type === 'EXPENSE' ? "#4b61dc" : "white"}
+                        backgroundColor={type === 'EXPENSE' ? "#dc4b4b" : "white"}
                         borderWidth={1}
-                        borderColor={type === 'EXPENSE' ? "#4b61dc" : "#e0e0e0"}
+                        borderColor={type === 'EXPENSE' ? "#dc4b4b" : "#e0e0e0"}
                         padding="$3"
                         borderRadius={10}
                         alignItems="center"
@@ -129,9 +129,9 @@ export const ModalContent = ()=> {
                     style={{ flex: 1 }}
                     >
                     <View
-                        backgroundColor={type === 'INCOME' ? "#4b61dc" : "white"}
+                        backgroundColor={type === 'INCOME' ? "#4bdc7d" : "white"}
                         borderWidth={1}
-                        borderColor={type === 'INCOME' ? "#4b61dc" : "#e0e0e0"}
+                        borderColor={type === 'INCOME' ? "#4bdc7d" : "#e0e0e0"}
                         padding="$3"
                         borderRadius={10}
                         alignItems="center"
@@ -211,7 +211,7 @@ export const ModalContent = ()=> {
             {/* Submit Button */}
             <XStack position="absolute" bottom={20} left={16} right={16}>
                 <Button
-                backgroundColor="#4b61dc"
+                backgroundColor={type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 color="white"
                 fontSize={16}
                 fontWeight="500"

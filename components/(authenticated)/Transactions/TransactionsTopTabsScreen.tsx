@@ -6,12 +6,14 @@ import { TransactionCard } from '../Home/TransactionCard';
 import { TransactionItem } from './TransactionItem';
 import { PlusIcon } from "react-native-heroicons/outline";
 import { useRouter } from 'expo-router';
+import { useFilterStore } from '~/store/useFilterStore';
 
 export const TransactionsTopTabsScreen = () => {
     const router = useRouter();
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+    const { transactionFilter, setTransactionFilter } = useFilterStore();
     
     return (
         <Theme name="light">
@@ -32,36 +34,44 @@ export const TransactionsTopTabsScreen = () => {
                     >
                         {/* Filter Options */}
                         <XStack space="$2">
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => setTransactionFilter('ALL')}>
                                 <View
-                                    backgroundColor="#4b61dc"
+                                    backgroundColor={transactionFilter === 'ALL' ? "#4b61dc" : "white"}
                                     borderRadius="$10"
                                     paddingHorizontal="$4"
                                     paddingVertical="$2"
                                 >
-                                    <Text color="white">All</Text>
+                                    <Text 
+                                    color={transactionFilter === 'ALL' ? "white" : "#4b61dc"}
+                                    fontSize={14}
+                                    >All</Text>
                                 </View>
                             </TouchableOpacity>
                             
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => setTransactionFilter('INCOME')}>
                                 <View
-                                    backgroundColor="white"
+                                    backgroundColor={transactionFilter === 'INCOME' ? "#4b61dc" : "white"}
                                     borderRadius="$10"
                                     paddingHorizontal="$4"
                                     paddingVertical="$2"
                                 >
-                                    <Text color="#4b61dc">Income</Text>
+                                    <Text 
+                                    color={transactionFilter === 'INCOME' ? "white" : "#4b61dc"}
+                                    fontSize={14}>Income</Text>
                                 </View>
                             </TouchableOpacity>
                             
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => setTransactionFilter('EXPENSE')}>
                                 <View
-                                    backgroundColor="white"
+                                    backgroundColor={transactionFilter === 'EXPENSE' ? "#4b61dc" : "white"}
                                     borderRadius="$10"
                                     paddingHorizontal="$4"
                                     paddingVertical="$2"
                                 >
-                                    <Text color="#4b61dc">Expense</Text>
+                                    <Text 
+                                    color={transactionFilter === 'EXPENSE' ? "white" : "#4b61dc"}
+                                    fontSize={14}
+                                    >Expense</Text>
                                 </View>
                             </TouchableOpacity>
                         </XStack>
@@ -70,7 +80,7 @@ export const TransactionsTopTabsScreen = () => {
                         <TouchableOpacity onPress={() => router.push('/NewTransaction')}>
                             <View
                                 backgroundColor="#4b61dc"
-                                borderRadius="$10"
+                                borderRadius="$5"
                                 width={36}
                                 height={36}
                                 alignItems="center"
@@ -113,7 +123,13 @@ export const TransactionsTopTabsScreen = () => {
                             date="Mon, Feb 12, 2025"
                             emoji="🛒"
                             type="EXPENSE"
-                            onPress={(id) => console.log('Transaction pressed:', id)}
+                            onPress={(id) => {
+                                console.log('Transaction pressed:', id);
+                                router.push({
+                                    pathname: '/transaction/[id]',
+                                    params: { id: id}
+                                });
+                            }}
                         />
                         <TransactionItem 
                             id={2}
@@ -123,7 +139,13 @@ export const TransactionsTopTabsScreen = () => {
                             date="Mon, Feb 12, 2025"
                             emoji="💰"
                             type="INCOME"
-                            onPress={(id) => console.log('Transaction pressed:', id)}
+                            onPress={(id) => {
+                                console.log('Transaction pressed:', id);
+                                router.push({
+                                    pathname: '/transaction/[id]',
+                                    params: { id: id }
+                                });
+                            }}
                         />
                         <TransactionItem 
                             id={3}
