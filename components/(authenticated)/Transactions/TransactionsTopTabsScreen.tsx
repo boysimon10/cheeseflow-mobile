@@ -7,6 +7,7 @@ import { TransactionItem } from './TransactionItem';
 import { PlusIcon } from "react-native-heroicons/outline";
 import { useRouter } from 'expo-router';
 import { useFilterStore } from '~/store/useFilterStore';
+import * as Haptics from 'expo-haptics';
 
 export const TransactionsTopTabsScreen = () => {
     const router = useRouter();
@@ -34,7 +35,10 @@ export const TransactionsTopTabsScreen = () => {
                     >
                         {/* Filter Options */}
                         <XStack space="$2">
-                            <TouchableOpacity onPress={() => setTransactionFilter('ALL')}>
+                            <TouchableOpacity onPress={() =>{ 
+                                setTransactionFilter('ALL');
+                                Haptics.selectionAsync();
+                                }}>
                                 <View
                                     backgroundColor={transactionFilter === 'ALL' ? "#4b61dc" : "white"}
                                     borderRadius="$10"
@@ -48,7 +52,10 @@ export const TransactionsTopTabsScreen = () => {
                                 </View>
                             </TouchableOpacity>
                             
-                            <TouchableOpacity onPress={() => setTransactionFilter('INCOME')}>
+                            <TouchableOpacity onPress={() => {
+                                setTransactionFilter('INCOME')
+                                Haptics.selectionAsync();
+                                }}>
                                 <View
                                     backgroundColor={transactionFilter === 'INCOME' ? "#4b61dc" : "white"}
                                     borderRadius="$10"
@@ -61,7 +68,10 @@ export const TransactionsTopTabsScreen = () => {
                                 </View>
                             </TouchableOpacity>
                             
-                            <TouchableOpacity onPress={() => setTransactionFilter('EXPENSE')}>
+                            <TouchableOpacity onPress={() => {
+                                setTransactionFilter('EXPENSE')
+                                Haptics.selectionAsync();
+                                }}>
                                 <View
                                     backgroundColor={transactionFilter === 'EXPENSE' ? "#4b61dc" : "white"}
                                     borderRadius="$10"

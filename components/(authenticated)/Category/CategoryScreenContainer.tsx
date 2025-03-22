@@ -1,39 +1,34 @@
 import { YStack, XStack, Theme, Text, View, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLongLeftIcon } from "react-native-heroicons/outline";
 import { PencilIcon, TrashIcon } from "react-native-heroicons/solid";
 
-type TransactionType = 'EXPENSE' | 'INCOME';
+type CategoryType = 'EXPENSE' | 'INCOME';
 
-type TransactionDetailProps = {
+type CategoryDetailProps = {
     id: string | string[];
 
-    transaction?: {
-        amount: string;
-        category: string;
-        description: string;
-        date: string;
+    category?: {
+        id: number;
+        name: string;
         emoji: string;
-        type: TransactionType;
-        notes?: string;
+        type: CategoryType;
+        userId: number;
     }
 };
 
-export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
+export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
     
-    //à remplacer par l'api apres
-    const mockTransaction = transaction || {
-        amount: "25,000",
-        category: "Alimentation",
-        description: "Courses au supermarché",
-        date: "Mon, Feb 12, 2025",
+    // Mock data pour la catégorie
+    const mockCategory = category || {
+        id: 1,
+        name: "Alimentation",
         emoji: "🛒",
-        type: "EXPENSE" as TransactionType,
-        notes: "Achats pour la semaine"
+        type: "EXPENSE" as CategoryType,
     };
     
     return (
@@ -58,7 +53,7 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 <ArrowLongLeftIcon size={25} color="#4b61dc" /> 
                 </TouchableOpacity>
                 <Text fontSize={22} fontWeight="700" color="#4b61dc">
-                Transaction Details
+                Category Details
                 </Text>
             </XStack>
             </YStack>
@@ -70,7 +65,7 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 paddingHorizontal: 16,
             }}
             >
-            {/* Transaction Amount Card */}
+            {/* Category Header Card */}
             <YStack
                 alignItems="center"
                 paddingVertical="$6"
@@ -79,28 +74,28 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 borderRadius={20}
             >
                 <View 
-                backgroundColor={mockTransaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={mockCategory.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 borderRadius={20}
                 alignItems="center"
                 justifyContent="center"
-                width={64}
-                height={64}
+                width={80}
+                height={80}
                 marginBottom="$4"
                 >
-                <Text fontSize={32}>{mockTransaction.emoji}</Text>
+                <Text fontSize={40}>{mockCategory.emoji}</Text>
                 </View>
                 
                 <Text 
-                fontSize={28} 
+                fontSize={24} 
                 fontWeight="700" 
-                color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 marginBottom="$2"
                 >
-                {mockTransaction.type === 'EXPENSE' ? '-' : '+'}{mockTransaction.amount} XOF
+                {mockCategory.name}
                 </Text>
                 
                 <XStack 
-                backgroundColor={mockTransaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={mockCategory.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 paddingHorizontal="$3"
                 paddingVertical="$1"
                 borderRadius={20}
@@ -108,17 +103,17 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 >
                 <Text 
                     fontSize={16} 
-                    color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
                     fontWeight="600"
                 >
-                    {mockTransaction.category}
+                    {mockCategory.type === 'EXPENSE' ? 'Expense' : 'Income'}
                 </Text>
                 </XStack>
             </YStack>
             
-            {/* Transaction Details */}
+            {/* Category Details */}
             <YStack space="$4" marginTop="$5">
-                {/* Transaction Info Section */}
+                {/* Category Info Section */}
                 <YStack 
                 backgroundColor="white" 
                 borderRadius={20} 
@@ -126,23 +121,23 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 space="$4"
                 >
                 <Text fontSize={18} fontWeight="700" color="#4b61dc" marginBottom="$1">
-                    Transaction Information
+                    Category Information
                 </Text>
                 
                 <YStack space="$3">
                     <YStack space="$1">
-                    <Text fontSize={14} color="#888" fontWeight="500">Description</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.description}</Text>
+                    <Text fontSize={14} color="#888" fontWeight="500">Identifier</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">#{mockCategory.id}</Text>
                     </YStack>
                     
                     <YStack space="$1">
-                    <Text fontSize={14} color="#888" fontWeight="500">Date</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.date}</Text>
+                    <Text fontSize={14} color="#888" fontWeight="500">Name</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{mockCategory.name}</Text>
                     </YStack>
                     
                     <YStack space="$1">
-                    <Text fontSize={14} color="#888" fontWeight="500">Category</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.category}</Text>
+                    <Text fontSize={14} color="#888" fontWeight="500">Emoji</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{mockCategory.emoji}</Text>
                     </YStack>
                     
                     <YStack space="$1">
@@ -152,14 +147,14 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                         width={10}
                         height={10}
                         borderRadius={5}
-                        backgroundColor={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        backgroundColor={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         />
                         <Text 
                         fontSize={16} 
                         fontWeight="600"
-                        color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         >
-                        {mockTransaction.type === 'EXPENSE' ? 'Expense' : 'Income'}
+                        {mockCategory.type === 'EXPENSE' ? 'Expense' : 'Income'}
                         </Text>
                     </XStack>
                     </YStack>
@@ -196,7 +191,7 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
             <TouchableOpacity style={{ flex: 1 }}>
                 <XStack
                 backgroundColor="white"
-                borderColor={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                borderColor={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 borderWidth={1.5}
                 borderRadius={16}
                 height={56}
@@ -204,9 +199,9 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 justifyContent="center"
                 space="$2"
                 >
-                <TrashIcon size={20} color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
+                <TrashIcon size={20} color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
                 <Text 
-                    color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
                     fontWeight="700" 
                     fontSize={16}
                 >

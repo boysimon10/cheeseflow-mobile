@@ -6,6 +6,7 @@ import { TransactionCard } from '../Home/TransactionCard';
 import { CategoryItem } from './CategoryItem';
 import { PlusIcon } from 'react-native-heroicons/outline';
 import { useFilterStore } from '~/store/useFilterStore';
+import * as Haptics from 'expo-haptics';
 
 export const CategoriesTopTabsScreen = () => {
     const router = useRouter();
@@ -34,7 +35,10 @@ export const CategoriesTopTabsScreen = () => {
                     >
                         {/* Filter Options */}
                     <XStack space="$2">
-                        <TouchableOpacity onPress={() => setCategoryFilter('ALL')}>
+                        <TouchableOpacity onPress={() => {
+                            setCategoryFilter('ALL')
+                            Haptics.selectionAsync();
+                        }}>
                             <View
                                 backgroundColor={categoryFilter === 'ALL' ? "#4b61dc" : "white"}
                                 borderRadius="$10"
@@ -48,7 +52,10 @@ export const CategoriesTopTabsScreen = () => {
                             </View>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity onPress={() => setCategoryFilter('INCOME')}>
+                        <TouchableOpacity onPress={() => {
+                            setCategoryFilter('INCOME')
+                            Haptics.selectionAsync();
+                        }}>
                             <View
                                 backgroundColor={categoryFilter === 'INCOME' ? "#4b61dc" : "white"}
                                 borderRadius="$10"
@@ -62,7 +69,10 @@ export const CategoriesTopTabsScreen = () => {
                             </View>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity onPress={() => setCategoryFilter('EXPENSE')}>
+                        <TouchableOpacity onPress={() => {
+                            setCategoryFilter('EXPENSE')
+                            Haptics.selectionAsync();
+                            }}>
                             <View
                                 backgroundColor={categoryFilter === 'EXPENSE' ? "#4b61dc" : "white"}
                                 borderRadius="$10"
@@ -97,14 +107,26 @@ export const CategoriesTopTabsScreen = () => {
                     name="Alimentation"
                     emoji="🍔"
                     type="EXPENSE"
-                    onPress={(id) => console.log('Category pressed:', id)}
+                    onPress={(id) => { 
+                        console.log('Category pressed:', id)
+                        router.push({
+                            pathname: '/category/[id]',
+                            params: { id: id}
+                        });
+                    }}
                 />
                 <CategoryItem 
                     id={2}
                     name="Salaire"
                     emoji="💰"
                     type="INCOME"
-                    onPress={(id) => console.log('Category pressed:', id)}
+                    onPress={(id) => { 
+                        console.log('Category pressed:', id)
+                        router.push({
+                            pathname: '/category/[id]',
+                            params: { id: id}
+                        });
+                    }}
                 />
                 <CategoryItem 
                     id={3}

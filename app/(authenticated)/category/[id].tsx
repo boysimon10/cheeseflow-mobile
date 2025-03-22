@@ -1,8 +1,8 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { Container } from '~/components/(authenticated)/Transaction/TransactionContainer';
-import { ScreenContent } from '~/components/(authenticated)/Transaction/TransactionScreenContainer';
+import { Container } from '~/components/(authenticated)/Category/CategoryContainer';
+import { ScreenContent } from '~/components/(authenticated)/Category/CategoryScreenContainer';
 
-const TransactionDetails = () => {
+const CategoryDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   
@@ -21,4 +21,4 @@ const TransactionDetails = () => {
   );
 }
 
-export default TransactionDetails;
+export default CategoryDetails;
