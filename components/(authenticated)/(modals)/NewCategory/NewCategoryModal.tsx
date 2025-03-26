@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { YStack, Theme, Text, XStack, View, Button, Input, ScrollView } from 'tamagui';
 import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
