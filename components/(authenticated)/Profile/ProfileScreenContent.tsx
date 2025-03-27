@@ -5,11 +5,15 @@ import { Dimensions } from 'react-native';
 import { ArrowLeftOnRectangleIcon, UserIcon, CurrencyDollarIcon, CogIcon, ChevronRightIcon } from 'react-native-heroicons/outline';
 import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useAuthStore } from '~/store/authStore';
 
 export const ScreenContent = () => {
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+
+    const { logout } = useAuthStore();
+
     
     return (
         <Theme name="light">
@@ -65,7 +69,8 @@ export const ScreenContent = () => {
                         <YStack>                          
                             {/* Personal Info */}
                             <TouchableOpacity 
-                                onPress={() => {Haptics.selectionAsync();}}
+                                onPress={() => {
+                                    Haptics.selectionAsync();}}
                                 style={{ marginBottom: 8 }}
                             >
                                 <XStack 
@@ -147,7 +152,10 @@ export const ScreenContent = () => {
                         
                         {/* Logout Button */}
                         <TouchableOpacity 
-                            onPress={() => {Haptics.selectionAsync();}}
+                            onPress={() => {
+                                Haptics.selectionAsync();
+                                logout();
+                            }}
                             style={{ marginTop: 5 }}
                         >
                             <XStack 

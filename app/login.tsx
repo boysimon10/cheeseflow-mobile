@@ -8,8 +8,6 @@ export default function Login() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }}  />
-
       <Container>
         <ScreenContent/>
       </Container>

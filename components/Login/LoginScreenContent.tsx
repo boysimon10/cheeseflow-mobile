@@ -1,20 +1,48 @@
-import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text } from 'tamagui';
-import { Link } from 'expo-router';
+import { YStack, Theme, Image, View, Text } from 'tamagui';
+import { Link, useRouter } from 'expo-router';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions } from 'react-native';
+import { Dimensions, Alert } from 'react-native';
 import { EnvelopeIcon, LockClosedIcon } from 'react-native-heroicons/outline';
-
-/* type ScreenContentProps = {
-  title: string;
-   children?: React.ReactNode; 
-}; */
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { LOGIN_MUTATION } from '~/apollo/mutations';
+import { useAuthStore } from '~/store/authStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ScreenContent = () => {
   const { bottom, top } = useSafeAreaInsets();
   const screenHeight = Dimensions.get('window').height;
   const minSpacing = Math.min(screenHeight * 0.5, -10);
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useAuthStore();
+
+  const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted: async (data) => {
+      const { access_token } = data.login;
+      await AsyncStorage.setItem('auth_token', access_token);
+      login(access_token);
+      router.replace('/(authenticated)/(tabs)');
+    },
+    onError: (error) => {
+      Alert.alert(
+        'Login Error', 
+        error.message || 'An error occurred'
+      );
+    }
+  });
+
+  const handleLogin = () => {
+    loginMutation({
+      variables: {
+        loginInput: { email, password }
+      }
+    });
+  };
 
   return (
     <Theme name="light">
@@ -61,6 +89,8 @@ export const ScreenContent = () => {
               autoCapitalize="none"
               autoCorrect={false}
               icon={<EnvelopeIcon size={20} color="#9CA3AF" />}
+              value={email}
+              onChangeText={setEmail}
             />
 
             <Input
@@ -69,11 +99,16 @@ export const ScreenContent = () => {
               autoCapitalize="none"
               autoCorrect={false}
               icon={<LockClosedIcon size={20} color="#9CA3AF" />}
+              value={password}
+              onChangeText={setPassword}
             />
 
-            <Link href={{ pathname: '/(authenticated)/(tabs)'}} asChild>
-              <Button title="Login" marginBottom={"$4"}/>
-            </Link>
+            <Button 
+              title="Login" 
+              marginBottom={"$4"}
+              onPress={handleLogin}
+              disabled={loading}
+            />
             <View paddingBottom={"$4"}>
               <Link href={{ pathname: '/register' }} asChild>
                 <Text color={"#4b61dc"} textAlign='center'>
@@ -81,9 +116,9 @@ export const ScreenContent = () => {
                 </Text>
               </Link>
             </View>
-        </View>
+          </View>
         </YStack>
-        </YStack>
+      </YStack>
     </Theme>
   );
 };

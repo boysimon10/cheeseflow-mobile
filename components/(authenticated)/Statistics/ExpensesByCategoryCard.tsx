@@ -26,7 +26,7 @@ export const ExpensesByCategoryCard = () => {
 
     const MOCK_DATA = {
         expensesByCategory: [
-            { categoryId: "1", categoryName: "Rent", amount: 850 },
+            { categoryId: "1", categoryName: "Rent", amount: 1850 },
             { categoryId: "2", categoryName: "Food", amount: 450 },
             { categoryId: "3", categoryName: "Transport", amount: 200 },
             { categoryId: "4", categoryName: "Entertainment", amount: 350 },
@@ -93,7 +93,7 @@ export const ExpensesByCategoryCard = () => {
                                     <Text color="#333">{item.label}</Text>
                                     <XStack marginLeft="auto" space="$2">
                                         <Text fontWeight="bold" color="#333">
-                                            {item.value}€
+                                            {item.value}
                                         </Text>
                                         <Text color="#666">({item.text})</Text>
                                     </XStack>

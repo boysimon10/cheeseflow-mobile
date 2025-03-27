@@ -8,8 +8,6 @@ export default function Register() {
   
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }}  />
-
       <Container>
         <ScreenContent/>
       </Container>
