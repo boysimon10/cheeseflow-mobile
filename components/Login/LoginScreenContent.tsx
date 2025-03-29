@@ -23,9 +23,11 @@ export const ScreenContent = () => {
 
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: async (data) => {
-      const { access_token } = data.login;
+      const { access_token, user } = data.login;
       await AsyncStorage.setItem('auth_token', access_token);
-      login(access_token);
+      login(access_token, user);
+      console.log(access_token, user);
+      
       router.replace('/(authenticated)/(tabs)');
     },
     onError: (error) => {

@@ -6,12 +6,46 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from "expo-status-bar";
 import { ApolloProvider } from '@apollo/client';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Slot, useRouter, useSegments } from "expo-router";
+
 import { client } from '../apollo/client';
-
-
 import config from '../tamagui.config';
 import { useAuthStore } from '~/store/authStore';
-import { useProtectedRoute } from '~/hooks/useProtectedRoute';
+
+function RootLayoutNav() {
+  const { isAuthenticated, checkAuth } = useAuthStore(state => ({
+    token: state.token,
+    isAuthenticated: state.isAuthenticated,
+    checkAuth: state.checkAuth
+  }));
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        console.error("Erreur lors de la vérification de l'authentification:", error);
+      }
+    };
+    
+    verifyAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    const inAuthGroup = segments[0] === "(authenticated)";
+
+    if (!isAuthenticated && inAuthGroup) {
+      router.replace("/login");
+    } else if (isAuthenticated && !inAuthGroup) {
+      router.replace("/(authenticated)/(tabs)");
+    }
+  }, [isAuthenticated, segments]);
+
+  return <Slot />;
+}
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -19,12 +53,8 @@ export default function Layout() {
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
 
-  const { checkAuth } = useAuthStore();
-  useProtectedRoute();
-
   useEffect(() => {
     if (loaded) {
-      checkAuth();
       SplashScreen.hideAsync();
     }
   }, [loaded]);
@@ -33,20 +63,16 @@ export default function Layout() {
 
   return (
     <GestureHandlerRootView>
-      <ApolloProvider client={client}>
-        <TamaguiProvider config={config}>
-          <StatusBar style="auto" />
-          <BottomSheetModalProvider>
-            <Stack> 
-              <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
-              <Stack.Screen name="index" options={{ headerShown: false }}  />
-              <Stack.Screen name="login" options={{ headerShown: false }}  />
-              <Stack.Screen name="register" options={{ headerShown: false }}  />
-            </Stack>
-          </BottomSheetModalProvider>
-        </TamaguiProvider>
-      </ApolloProvider>
+      <SafeAreaProvider>
+        <ApolloProvider client={client}>
+          <TamaguiProvider config={config}>
+            <BottomSheetModalProvider>
+              <StatusBar style="auto" />
+              <RootLayoutNav />
+            </BottomSheetModalProvider>
+          </TamaguiProvider>
+        </ApolloProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
-    
   );
 }
