@@ -41,3 +41,31 @@ export const GET_PROFILE_QUERY = gql`
     }
   }
 `;
+
+export const GET_BALANCE_QUERY =gql `
+  query GetBalance {
+    balance
+  }
+`
+
+export const GET_TRANSACTIONS_QUERY = gql`
+  query GetTransactions($filters: TransactionFilterInput) {
+    transactions(filters: $filters) {
+      id
+      amount
+      description
+      type
+      categoryId
+      userId
+      date
+      createdAt
+      updatedAt
+      category {
+        id
+        name
+        emoji
+        type
+      }
+    }
+  }
+`;

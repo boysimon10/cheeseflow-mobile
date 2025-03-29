@@ -1,20 +1,57 @@
-import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text, XStack, ScrollView } from 'tamagui';
-import { Link } from 'expo-router';
+import { YStack, Theme, Text, XStack, ScrollView, Spinner } from 'tamagui';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions } from 'react-native';
-import { MagnifyingGlassIcon, PlusIcon} from 'react-native-heroicons/outline';
+import { Dimensions, RefreshControl } from 'react-native';
+import { MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { BalanceCard } from './BalanceCard';
-import { TransactionCard } from './TransactionCard';
-import { CategoryCard } from './CategoryCard';
-
+import { useAuthStore } from '~/store/authStore';
+import { GET_BALANCE_QUERY, GET_TRANSACTIONS_QUERY } from '~/apollo/mutations';
+import { useQuery } from '@apollo/client';
+import { LastTransactionsList } from './LastTransactionsList';
+import { useState, useCallback } from 'react';
 
 export const ScreenContent = () => {
+    const router = useRouter();
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+    const { user } = useAuthStore();
+    const [refreshing, setRefreshing] = useState(false);
 
+    const { data: balanceData, loading: balanceLoading, refetch: refetchBalance } = useQuery(GET_BALANCE_QUERY);
+    const balance = balanceData?.balance || 0;
+    
+    const { 
+        data: transactionsData, 
+        loading: transactionsLoading, 
+        error: transactionsError,
+        refetch: refetchTransactions 
+    } = useQuery(GET_TRANSACTIONS_QUERY, {
+        variables: {
+            filters: {
+                limit: 10
+            }
+        }
+    });
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        
+        try {
+            await Promise.all([
+                refetchBalance(),
+                refetchTransactions()
+            ]);
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetchBalance, refetchTransactions]);
+    
     return (
     <Theme name="light">
         <YStack flex={1} paddingHorizontal="$4" space={minSpacing}>
@@ -38,7 +75,7 @@ export const ScreenContent = () => {
                         fontWeight="700"
                         color="#4b61dc"
                     >
-                        Simon
+                        {user?.name}
                     </Text>
                 </YStack>
                 <TouchableOpacity
@@ -54,47 +91,22 @@ export const ScreenContent = () => {
                 </TouchableOpacity>
             </XStack>
             <ScrollView 
-
-                    showsVerticalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingBottom: 100,
+                }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#4b61dc"
+                        colors={["#4b61dc"]}
+                    />
+                }
             >
             <YStack paddingTop="$2">
-                <BalanceCard />
-                {/* <XStack 
-                        justifyContent="space-between" 
-                        alignItems="center"
-                        paddingVertical="$2"
-                    >
-                        <Text
-                            fontSize={18}
-                            fontWeight="700"
-                            color="#4b61dc"
-                        >
-                            Categories
-                        </Text>
-                        <TouchableOpacity onPress={() => {Haptics.selectionAsync();}}>
-                            <Text
-                                fontSize={14}
-                                color="#4b61dc"
-                            >
-                                See all
-                            </Text>
-                        </TouchableOpacity>
-                    </XStack>
-                <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{
-                        marginHorizontal: -18,
-                    }}
-                    contentContainerStyle={{
-                        paddingHorizontal: 16, 
-                        gap: 16,
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                    }}
-                >
-                    <CategoryCard />
-                </ScrollView> */}
+                <BalanceCard balance={balance}/>
+
                 <YStack space={6}>
                     <XStack 
                         justifyContent="space-between" 
@@ -114,15 +126,21 @@ export const ScreenContent = () => {
                                 fontSize={14}
                                 fontWeight={"500"}
                                 color="#4b61dc"
+                                onPress={() => {
+                                    Haptics.selectionAsync();
+                                    router.push('/transactions');
+                                }}
                             >
                                 See all
                             </Text>
                         </TouchableOpacity>
                     </XStack>
-                    <TransactionCard />
-                    <TransactionCard />
-                    <TransactionCard />
-                    <TransactionCard />
+                    <LastTransactionsList 
+                        transactions={transactionsData?.transactions || []}
+                        loading={transactionsLoading}
+                        error={transactionsError}
+                        currency={user?.currency || "XOF"}
+                    />
                 </YStack>
             </YStack>
             </ScrollView>

@@ -2,16 +2,25 @@ import { View, XStack, Text, YStack } from "tamagui";
 import * as Haptics from 'expo-haptics';
 import { TouchableOpacity } from 'react-native';
 
+interface TransactionCardProps {
+  category: string;
+  emoji: string;
+  date: string;
+  description: string;
+  amount: string;
+  currency: string;
+  type: string;
+}
+
 export const TransactionCard = ({
-  category = "Hamburger",
-  emoji = "🍔",
-  date = "Mon, Feb 12",
-  description = "",
-  amount = "10000",
-  currency = "XOF",
-  type = "EXPENSE",
-  
-}) => {
+  category,
+  emoji,
+  date,
+  description,
+  amount,
+  currency,
+  type,
+}: TransactionCardProps) => {
 
   const isExpense = type === "EXPENSE";
   const amountColor = isExpense ? "#dc4b4b" : "#4bdc7d";
@@ -22,7 +31,6 @@ export const TransactionCard = ({
       onPress={() => {
         Haptics.selectionAsync();
       }}
-
     >
       <XStack
         backgroundColor={"#fff"}
@@ -60,7 +68,7 @@ export const TransactionCard = ({
                 fontSize={14}
                 color="#666"
               >
-                {description}
+                {description.length > 17 ? description.substring(0, 18) + '...' : description}
               </Text>
             ) : null}
             

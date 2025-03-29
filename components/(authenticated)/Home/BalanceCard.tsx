@@ -4,7 +4,11 @@ import { PlusIcon } from 'react-native-heroicons/outline';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router'
 
-export const BalanceCard = () => {
+type Props = {
+    balance: number;
+};
+
+export const BalanceCard = ({ balance }: Props) => {
     const router = useRouter();
     return (
         <XStack
@@ -26,7 +30,7 @@ export const BalanceCard = () => {
                         fontWeight="600"
                         color="#4b61dc"
                     >
-                        10000{' '}
+                        {balance}{' '}
                     </Text>
                     <Text
                         fontSize={16}

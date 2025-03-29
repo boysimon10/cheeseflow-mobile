@@ -12,7 +12,7 @@ export const ScreenContent = () => {
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
 
-    const { logout } = useAuthStore();
+    const { logout, user } = useAuthStore();
 
     
     return (
@@ -57,12 +57,12 @@ export const ScreenContent = () => {
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                <Text fontSize={28} fontWeight="600" color="white">S</Text>
+                                <Text fontSize={28} fontWeight="600" color="white">{user?.name ? user.name.charAt(0).toUpperCase() : ''}</Text>
                             </View>
                             
-                            <Text fontSize={20} fontWeight="700" color="#4b61dc">Simon Diouf</Text>
-                            <Text fontSize={16} color="#4b61dc">simondiouf2710@gmail.com</Text>
-                            <Text fontSize={14} color="#4b61dc">+221 77 456 789</Text>
+                            <Text fontSize={20} fontWeight="700" color="#4b61dc">{user?.name}</Text>
+                            <Text fontSize={16} color="#4b61dc">{user?.email}</Text>
+                            {/* <Text fontSize={14} color="#4b61dc">+221 77 456 789</Text> */}
                         </YStack>
 
                         {/* Profile Settings */}
@@ -117,7 +117,7 @@ export const ScreenContent = () => {
                                         <Text fontSize={16} color="#333">Currency</Text>
                                     </XStack>
                                     <XStack alignItems="center" space="$2">
-                                        <Text fontSize={16} color="#666">XOF</Text>
+                                        <Text fontSize={16} color="#666">{user?.currency}</Text>
                                         <ChevronRightIcon size={18} color="#4b61dc" />
                                     </XStack>
                                 </XStack>
