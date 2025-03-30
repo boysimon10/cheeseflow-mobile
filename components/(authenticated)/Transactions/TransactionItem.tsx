@@ -10,6 +10,7 @@ type TransactionItemProps = {
     date: string;
     emoji: string;
     type: 'EXPENSE' | 'INCOME';
+    currency: string;
     onPress?: (id: number) => void;
 }
 
@@ -21,6 +22,7 @@ export const TransactionItem = ({
     date, 
     emoji, 
     type, 
+    currency,
     onPress 
 }: TransactionItemProps) => (
     <TouchableOpacity 
@@ -62,7 +64,7 @@ export const TransactionItem = ({
             fontWeight="600" 
             color={type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
         >
-            {type === 'EXPENSE' ? '-' : '+'}{amount} XOF
+            {type === 'EXPENSE' ? '-' : '+'}{amount} {currency}
         </Text>
         </XStack>
     </TouchableOpacity>

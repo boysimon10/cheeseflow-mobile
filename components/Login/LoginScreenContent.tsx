@@ -10,6 +10,7 @@ import { useMutation } from '@apollo/client';
 import { LOGIN_MUTATION } from '~/apollo/mutations';
 import { useAuthStore } from '~/store/authStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginResponse, LoginUserInput } from '~/apollo/types';
 
 export const ScreenContent = () => {
   const { bottom, top } = useSafeAreaInsets();
@@ -21,7 +22,10 @@ export const ScreenContent = () => {
   const [password, setPassword] = useState('');
   const { login } = useAuthStore();
 
-  const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
+  const [loginMutation, { loading }] = useMutation<
+    { login: LoginResponse },
+    { loginInput: LoginUserInput }
+  >(LOGIN_MUTATION, {
     onCompleted: async (data) => {
       const { access_token, user } = data.login;
       await AsyncStorage.setItem('auth_token', access_token);

@@ -6,13 +6,18 @@ import { ArrowLeftOnRectangleIcon, UserIcon, CurrencyDollarIcon, CogIcon, Chevro
 import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useAuthStore } from '~/store/authStore';
+import { GET_PROFILE_QUERY } from '~/apollo/mutations';
+import { useQuery } from '@apollo/client';
 
 export const ScreenContent = () => {
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
 
-    const { logout, user } = useAuthStore();
+    const { logout } = useAuthStore();
+
+    const { data: userData, loading: userLoading, refetch: userRefetch } = useQuery(GET_PROFILE_QUERY);
+    const user = userData?.profile || null;
 
     
     return (

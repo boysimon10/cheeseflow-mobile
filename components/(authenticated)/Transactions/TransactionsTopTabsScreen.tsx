@@ -1,8 +1,6 @@
-import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text, XStack, ScrollView } from 'tamagui';
-import { Link } from 'expo-router';
+import { YStack, Theme, View, Text, XStack, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions, TouchableOpacity } from 'react-native';
-import { TransactionCard } from '../Home/TransactionCard';
 import { TransactionItem } from './TransactionItem';
 import { PlusIcon } from "react-native-heroicons/outline";
 import { useRouter } from 'expo-router';
@@ -133,6 +131,7 @@ export const TransactionsTopTabsScreen = () => {
                             date="Mon, Feb 12, 2025"
                             emoji="🛒"
                             type="EXPENSE"
+                            currency='XOF'
                             onPress={(id) => {
                                 console.log('Transaction pressed:', id);
                                 router.push({
@@ -149,6 +148,7 @@ export const TransactionsTopTabsScreen = () => {
                             date="Mon, Feb 12, 2025"
                             emoji="💰"
                             type="INCOME"
+                            currency='XOF'
                             onPress={(id) => {
                                 console.log('Transaction pressed:', id);
                                 router.push({
@@ -165,6 +165,7 @@ export const TransactionsTopTabsScreen = () => {
                             date="Mon, Feb 12, 2025"
                             emoji="🚕"
                             type="EXPENSE"
+                            currency='XOF'
                             onPress={(id) => console.log('Transaction pressed:', id)}
                         />
                     </YStack>

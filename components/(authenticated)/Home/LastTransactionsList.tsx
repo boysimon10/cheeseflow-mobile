@@ -2,9 +2,10 @@ import { YStack, Text, Spinner } from "tamagui";
 import { TransactionCard } from "./TransactionCard";
 import { format } from "date-fns";
 import { ApolloError } from "@apollo/client";
+import { Transaction } from "~/apollo/types";
 
-interface LastTransactionsListProps {
-  transactions: any[];
+type LastTransactionsListProps = {
+  transactions: Transaction[];
   loading: boolean;
   error?: ApolloError;
   currency: string;

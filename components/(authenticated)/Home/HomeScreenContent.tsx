@@ -11,6 +11,7 @@ import { GET_BALANCE_QUERY, GET_TRANSACTIONS_QUERY } from '~/apollo/mutations';
 import { useQuery } from '@apollo/client';
 import { LastTransactionsList } from './LastTransactionsList';
 import { useState, useCallback } from 'react';
+import { GetBalanceResponse, GetTransactionsResponse, TransactionFilterInput } from '~/apollo/types';
 
 export const ScreenContent = () => {
     const router = useRouter();
@@ -20,7 +21,7 @@ export const ScreenContent = () => {
     const { user } = useAuthStore();
     const [refreshing, setRefreshing] = useState(false);
 
-    const { data: balanceData, loading: balanceLoading, refetch: refetchBalance } = useQuery(GET_BALANCE_QUERY);
+    const { data: balanceData, loading: balanceLoading, refetch: refetchBalance } = useQuery<GetBalanceResponse>(GET_BALANCE_QUERY);
     const balance = balanceData?.balance || 0;
     
     const { 
@@ -28,10 +29,10 @@ export const ScreenContent = () => {
         loading: transactionsLoading, 
         error: transactionsError,
         refetch: refetchTransactions 
-    } = useQuery(GET_TRANSACTIONS_QUERY, {
+    } = useQuery<GetTransactionsResponse, { filters?: TransactionFilterInput }>(GET_TRANSACTIONS_QUERY, {
         variables: {
             filters: {
-                limit: 10
+                limit: 5
             }
         }
     });
@@ -91,10 +92,10 @@ export const ScreenContent = () => {
                 </TouchableOpacity>
             </XStack>
             <ScrollView 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingBottom: 100,
-                }}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 200,
+                    }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}

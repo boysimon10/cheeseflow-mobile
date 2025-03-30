@@ -2,7 +2,7 @@ import { View, XStack, Text, YStack } from "tamagui";
 import * as Haptics from 'expo-haptics';
 import { TouchableOpacity } from 'react-native';
 
-interface TransactionCardProps {
+type TransactionCardProps = {
   category: string;
   emoji: string;
   date: string;
