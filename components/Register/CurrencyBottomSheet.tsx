@@ -153,6 +153,9 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
                 renderItem={renderCurrencyItem}
                 keyExtractor={(item) => item}
                 showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingBottom: 100,
+              }}
               />
             </YStack>
           </BottomSheetView>

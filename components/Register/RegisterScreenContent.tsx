@@ -102,15 +102,22 @@ export const ScreenContent = () => {
             />
             
             {/* Currency Selector */}
-            <Input
-              placeholder={currencyDisplayText}
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon={<CurrencyDollarIcon size={20} color="#9CA3AF" />}
-              onPress={() => handleOpenBottomSheet()}
-              editable={false}
-              value={currencyDisplayText !== "Select Currency" ? currencyDisplayText : ""}
-            />
+            <TouchableOpacity 
+              activeOpacity={0.8} 
+              onPress={() => {
+                handleOpenBottomSheet();
+                console.log('Currency Selector Pressed');
+              }}
+            >
+              <Input
+                placeholder={currencyDisplayText}
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon={<CurrencyDollarIcon size={20} color="#9CA3AF" />}
+                editable={false}
+                value={currencyDisplayText !== "Select Currency" ? currencyDisplayText : ""}
+              />
+            </TouchableOpacity>
             
             <Input
               placeholder="Password"

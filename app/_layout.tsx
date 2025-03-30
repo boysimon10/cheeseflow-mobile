@@ -62,7 +62,7 @@ export default function Layout() {
   if (!loaded) return null;
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ApolloProvider client={client}>
           <TamaguiProvider config={config}>
