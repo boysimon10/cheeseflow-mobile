@@ -16,6 +16,8 @@ export const BalanceCard = ({ balance }: Props) => {
             borderRadius={20}
             padding={"$5"}
             justifyContent='space-between'
+            alignItems='center'
+
         >
             <YStack>
                 <Text
@@ -46,7 +48,6 @@ export const BalanceCard = ({ balance }: Props) => {
                     backgroundColor: 'white',
                     padding: 8,
                     borderRadius: 1000,
-                    alignSelf: 'flex-start'
                 }}
                 onPress={() => {Haptics.selectionAsync(), router.push('/NewTransaction')}}
             >

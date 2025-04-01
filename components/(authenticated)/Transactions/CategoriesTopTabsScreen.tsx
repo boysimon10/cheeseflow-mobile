@@ -1,39 +1,57 @@
-import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text, XStack, ScrollView } from 'tamagui';
-import { Link, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { YStack, Theme, View, Text, XStack } from 'tamagui';
+import { useRouter } from 'expo-router';
 import { Dimensions, TouchableOpacity } from 'react-native';
-import { TransactionCard } from '../Home/TransactionCard';
-import { CategoryItem } from './CategoryItem';
 import { PlusIcon } from 'react-native-heroicons/outline';
 import { useFilterStore } from '~/store/useFilterStore';
 import * as Haptics from 'expo-haptics';
+import { CategoriesList } from './CategoriesList';
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORIES_QUERY } from '~/apollo/mutations';
+import { Category } from '~/apollo/types';
+import { useEffect } from 'react';
+
+type GetCategoriesResponse = {
+    categories: Category[];
+};
 
 export const CategoriesTopTabsScreen = () => {
     const router = useRouter();
     const { categoryFilter, setCategoryFilter } = useFilterStore();
-    const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+    
+    const { loading, error, data, refetch } = useQuery<GetCategoriesResponse>(
+        GET_CATEGORIES_QUERY,
+        {
+            variables: {
+                filters: {} 
+            },
+            fetchPolicy: 'network-only',
+        }
+    );
+
+    // Filter
+    const filteredCategories = data?.categories 
+        ? categoryFilter === 'ALL' 
+            ? data.categories 
+            : data.categories.filter(category => category.type === categoryFilter)
+        : [];
+
+    useEffect(() => {
+        refetch();
+    }, [categoryFilter, refetch]);
     
     return (
         <Theme name="light">
             <YStack flex={1} paddingHorizontal="$4" space={minSpacing}>
-            
-            <ScrollView 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingBottom: 100,
-                    paddingTop: 10,
-                }}
+                {/* Filter XStack with Add Button */}
+                <XStack
+                    paddingVertical="$4"
+                    marginBottom="$3"
+                    justifyContent="space-between"
+                    alignItems="center"
                 >
-                    {/* Filter XStack with Add Button */}
-                    <XStack
-                        paddingVertical="$2"
-                        marginBottom="$3"
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        {/* Filter Options */}
+                    {/* Filter Options */}
                     <XStack space="$2">
                         <TouchableOpacity onPress={() => {
                             setCategoryFilter('ALL')
@@ -86,70 +104,29 @@ export const CategoriesTopTabsScreen = () => {
                             </View>
                         </TouchableOpacity>
                     </XStack>
-                        {/* Add Transaction Button */}
-                        <TouchableOpacity onPress={() => router.push('/NewCategory')}>
-                            <View
-                                backgroundColor="#4b61dc"
-                                borderRadius="$5"
-                                width={36}
-                                height={36}
-                                alignItems="center"
-                                justifyContent="center"
-                            >
-                                <PlusIcon size={20} color="white" />
-                            </View>
-                        </TouchableOpacity>
-                    </XStack>
+                    
+                    {/* Add Category Button */}
+                    <TouchableOpacity onPress={() => router.push('/NewCategory')}>
+                        <View
+                            backgroundColor="#4b61dc"
+                            borderRadius="$5"
+                            width={36}
+                            height={36}
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            <PlusIcon size={20} color="white" />
+                        </View>
+                    </TouchableOpacity>
+                </XStack>
 
-                        
-                <CategoryItem 
-                    id={1}
-                    name="Alimentation"
-                    emoji="🍔"
-                    type="EXPENSE"
-                    onPress={(id) => { 
-                        console.log('Category pressed:', id)
-                        router.push({
-                            pathname: '/category/[id]',
-                            params: { id: id}
-                        });
-                    }}
+                {/* Categories List */}
+                <CategoriesList 
+                    categories={filteredCategories}
+                    loading={loading}
+                    error={error}
                 />
-                <CategoryItem 
-                    id={2}
-                    name="Salaire"
-                    emoji="💰"
-                    type="INCOME"
-                    onPress={(id) => { 
-                        console.log('Category pressed:', id)
-                        router.push({
-                            pathname: '/category/[id]',
-                            params: { id: id}
-                        });
-                    }}
-                />
-                <CategoryItem 
-                    id={3}
-                    name="Transport"
-                    emoji="🚗"
-                    type="EXPENSE"
-                    onPress={(id) => console.log('Category pressed:', id)}
-                />
-                <CategoryItem 
-                    id={4}
-                    name="Loisirs"
-                    emoji="🎮"
-                    type="EXPENSE"
-                    onPress={(id) => console.log('Category pressed:', id)}
-                />
-                <CategoryItem 
-                    id={5}
-                    name="Freelance"
-                    emoji="💻"
-                    type="INCOME"
-                    onPress={(id) => console.log('Category pressed:', id)}
-                />
-            </ScrollView></YStack>
+            </YStack>
         </Theme>
     );
 };

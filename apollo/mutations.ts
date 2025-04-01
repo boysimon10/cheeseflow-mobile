@@ -69,3 +69,54 @@ export const GET_TRANSACTIONS_QUERY = gql`
     }
   }
 `;
+
+
+export const GET_CATEGORIES_QUERY = gql`
+query GetCategories {
+  categories {
+    id
+    name
+    emoji
+    type
+    userId
+    createdAt
+    updatedAt
+  }
+}
+`;
+
+export const GET_CATEGORY_QUERY = gql`
+query GetCategory($id: Float!) {
+  category(id: $id) {
+    id
+    name
+    emoji
+    type
+    userId
+    createdAt
+    updatedAt
+  }
+}
+`;
+
+export const GET_TRANSACTION_QUERY = gql`
+query GetTransaction($id: Float!) {
+  transaction(id: $id) {
+    id
+    amount
+    description
+    type
+    categoryId
+    userId
+    date
+    createdAt
+    updatedAt
+    category {
+      id
+      name
+      emoji
+      type
+    }
+  }
+}
+`;

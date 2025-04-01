@@ -36,6 +36,9 @@ export type Category = {
     name: string;
     emoji: string;
     type: string;
+    userId?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type Transaction = {
@@ -70,6 +73,14 @@ export type GetTransactionsResponse = {
     transactions: Transaction[];
 }
 
+export type GetCategoryResponse = {
+    category: Category;
+}
+
+export type GetTransactionResponse = {
+    transaction: Transaction;
+}
+
 // Mutation variables types
 export type LoginMutationVariables = {
     loginInput: LoginUserInput;
@@ -83,3 +94,4 @@ export type CreateUserMutationVariables = {
 export type GetTransactionsQueryVariables = {
     filters?: TransactionFilterInput;
 }
+

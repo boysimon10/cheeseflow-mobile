@@ -1,35 +1,69 @@
 import { YStack, XStack, Theme, Text, View, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLongLeftIcon } from "react-native-heroicons/outline";
 import { PencilIcon, TrashIcon } from "react-native-heroicons/solid";
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORY_QUERY } from '~/apollo/mutations';
+import { GetCategoryResponse, Category } from '~/apollo/types';
 
 type CategoryType = 'EXPENSE' | 'INCOME';
 
 type CategoryDetailProps = {
     id: string | string[];
-
-    category?: {
-        id: number;
-        name: string;
-        emoji: string;
-        type: CategoryType;
-        userId: number;
-    }
 };
 
-export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
+export const ScreenContent = ({ id }: CategoryDetailProps) => {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
     
-    // Mock data pour la catégorie
-    const mockCategory = category || {
-        id: 1,
-        name: "Alimentation",
-        emoji: "🛒",
-        type: "EXPENSE" as CategoryType,
-    };
+    // GraphQL query to fetch category details
+    const { loading, error, data } = useQuery<GetCategoryResponse>(
+        GET_CATEGORY_QUERY,
+        {
+            variables: {
+                id: Number(id)
+            },
+            fetchPolicy: 'network-only',
+        }
+    );
+    
+    // Show loading state
+    if (loading) {
+        return (
+            <Theme name="light">
+                <YStack flex={1} backgroundColor="#f9f9f9" justifyContent="center" alignItems="center">
+                    <ActivityIndicator size="large" color="#4b61dc" />
+                </YStack>
+            </Theme>
+        );
+    }
+    
+    // Show error state
+    if (error) {
+        return (
+            <Theme name="light">
+                <YStack flex={1} backgroundColor="#f9f9f9" justifyContent="center" alignItems="center" padding="$4">
+                    <Text color="red" textAlign="center">Error: {error.message}</Text>
+                </YStack>
+            </Theme>
+        );
+    }
+    
+    // Get category data
+    const category = data?.category;
+    
+    // If category not found
+    if (!category) {
+        return (
+            <Theme name="light">
+                <YStack flex={1} backgroundColor="#f9f9f9" justifyContent="center" alignItems="center" padding="$4">
+                    <Text color="#666" textAlign="center">Category not found</Text>
+                </YStack>
+            </Theme>
+        );
+    }
     
     return (
         <Theme name="light">
@@ -74,7 +108,7 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                 borderRadius={20}
             >
                 <View 
-                backgroundColor={mockCategory.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={category.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 borderRadius={20}
                 alignItems="center"
                 justifyContent="center"
@@ -82,20 +116,20 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                 height={80}
                 marginBottom="$4"
                 >
-                <Text fontSize={40}>{mockCategory.emoji}</Text>
+                <Text fontSize={40}>{category.emoji}</Text>
                 </View>
                 
                 <Text 
                 fontSize={24} 
                 fontWeight="700" 
-                color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                color={category.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 marginBottom="$2"
                 >
-                {mockCategory.name}
+                {category.name}
                 </Text>
                 
                 <XStack 
-                backgroundColor={mockCategory.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={category.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 paddingHorizontal="$3"
                 paddingVertical="$1"
                 borderRadius={20}
@@ -103,10 +137,10 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                 >
                 <Text 
                     fontSize={16} 
-                    color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={category.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
                     fontWeight="600"
                 >
-                    {mockCategory.type === 'EXPENSE' ? 'Expense' : 'Income'}
+                    {category.type === 'EXPENSE' ? 'Expense' : 'Income'}
                 </Text>
                 </XStack>
             </YStack>
@@ -127,17 +161,17 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                 <YStack space="$3">
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Identifier</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">#{mockCategory.id}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">#{category.id}</Text>
                     </YStack>
                     
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Name</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockCategory.name}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{category.name}</Text>
                     </YStack>
                     
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Emoji</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockCategory.emoji}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{category.emoji}</Text>
                     </YStack>
                     
                     <YStack space="$1">
@@ -147,17 +181,26 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                         width={10}
                         height={10}
                         borderRadius={5}
-                        backgroundColor={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        backgroundColor={category.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         />
                         <Text 
                         fontSize={16} 
                         fontWeight="600"
-                        color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        color={category.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         >
-                        {mockCategory.type === 'EXPENSE' ? 'Expense' : 'Income'}
+                        {category.type === 'EXPENSE' ? 'Expense' : 'Income'}
                         </Text>
                     </XStack>
                     </YStack>
+                    
+                    {category.createdAt && (
+                    <YStack space="$1">
+                        <Text fontSize={14} color="#888" fontWeight="500">Created</Text>
+                        <Text fontSize={16} color="#333" fontWeight="600">
+                            {new Date(category.createdAt).toLocaleDateString()}
+                        </Text>
+                    </YStack>
+                    )}
                 </YStack>
                 </YStack>
 
@@ -191,7 +234,7 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
             <TouchableOpacity style={{ flex: 1 }}>
                 <XStack
                 backgroundColor="white"
-                borderColor={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                borderColor={"#dc4b4b"}
                 borderWidth={1.5}
                 borderRadius={16}
                 height={56}
@@ -199,9 +242,9 @@ export const ScreenContent = ({ id, category }: CategoryDetailProps) => {
                 justifyContent="center"
                 space="$2"
                 >
-                <TrashIcon size={20} color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
+                <TrashIcon size={20} color={"#dc4b4b"} />
                 <Text 
-                    color={mockCategory.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={"#dc4b4b"} 
                     fontWeight="700" 
                     fontSize={16}
                 >

@@ -1,40 +1,55 @@
 import { YStack, XStack, Theme, Text, View, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLongLeftIcon } from "react-native-heroicons/outline";
 import { PencilIcon, TrashIcon } from "react-native-heroicons/solid";
-
-type TransactionType = 'EXPENSE' | 'INCOME';
+import { useQuery } from '@apollo/client';
+import { GET_TRANSACTION_QUERY } from '~/apollo/mutations';
+import { Transaction, GetTransactionResponse } from '~/apollo/types';
+import { format, parseISO } from 'date-fns';
+import { useAuthStore } from '~/store/authStore';
 
 type TransactionDetailProps = {
     id: string | string[];
-
-    transaction?: {
-        amount: string;
-        category: string;
-        description: string;
-        date: string;
-        emoji: string;
-        type: TransactionType;
-        notes?: string;
-    }
 };
 
-export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
+export const ScreenContent = ({ id }: TransactionDetailProps) => {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
+    const { user } = useAuthStore();
+    const currency = user?.currency || 'XOF';
     
-    //à remplacer par l'api apres
-    const mockTransaction = transaction || {
-        amount: "25,000",
-        category: "Alimentation",
-        description: "Courses au supermarché",
-        date: "Mon, Feb 12, 2025",
-        emoji: "🛒",
-        type: "EXPENSE" as TransactionType,
-        notes: "Achats pour la semaine"
-    };
+    const { loading, error, data } = useQuery<GetTransactionResponse>(
+        GET_TRANSACTION_QUERY,
+        {
+            variables: { id: parseFloat(id as string) },
+            fetchPolicy: 'network-only',
+        }
+    );
+    
+    if (loading) {
+        return (
+            <Theme name="light">
+                <YStack flex={1} justifyContent="center" alignItems="center">
+                    <ActivityIndicator size="large" color="#4b61dc" />
+                </YStack>
+            </Theme>
+        );
+    }
+    
+    if (error || !data?.transaction) {
+        return (
+            <Theme name="light">
+                <YStack flex={1} justifyContent="center" alignItems="center">
+                    <Text color="red">Error loading transaction details</Text>
+                </YStack>
+            </Theme>
+        );
+    }
+    
+    const transaction = data.transaction;
+    const formattedDate = format(parseISO(transaction.date), 'EEE, MMM d, yyyy');
     
     return (
         <Theme name="light">
@@ -79,7 +94,7 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 borderRadius={20}
             >
                 <View 
-                backgroundColor={mockTransaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={transaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 borderRadius={20}
                 alignItems="center"
                 justifyContent="center"
@@ -87,20 +102,20 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 height={64}
                 marginBottom="$4"
                 >
-                <Text fontSize={32}>{mockTransaction.emoji}</Text>
+                <Text fontSize={32}>{transaction.category.emoji}</Text>
                 </View>
                 
                 <Text 
                 fontSize={28} 
                 fontWeight="700" 
-                color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 marginBottom="$2"
                 >
-                {mockTransaction.type === 'EXPENSE' ? '-' : '+'}{mockTransaction.amount} XOF
+                {transaction.type === 'EXPENSE' ? '-' : '+'}{transaction.amount.toLocaleString()} {currency}
                 </Text>
                 
                 <XStack 
-                backgroundColor={mockTransaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
+                backgroundColor={transaction.type === 'EXPENSE' ? "#ffeded" : "#e3fff0"}
                 paddingHorizontal="$3"
                 paddingVertical="$1"
                 borderRadius={20}
@@ -108,10 +123,10 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 >
                 <Text 
                     fontSize={16} 
-                    color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
                     fontWeight="600"
                 >
-                    {mockTransaction.category}
+                    {transaction.category.name}
                 </Text>
                 </XStack>
             </YStack>
@@ -132,17 +147,17 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 <YStack space="$3">
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Description</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.description}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{transaction.description}</Text>
                     </YStack>
                     
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Date</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.date}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{formattedDate}</Text>
                     </YStack>
                     
                     <YStack space="$1">
                     <Text fontSize={14} color="#888" fontWeight="500">Category</Text>
-                    <Text fontSize={16} color="#333" fontWeight="600">{mockTransaction.category}</Text>
+                    <Text fontSize={16} color="#333" fontWeight="600">{transaction.category.name}</Text>
                     </YStack>
                     
                     <YStack space="$1">
@@ -152,14 +167,14 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                         width={10}
                         height={10}
                         borderRadius={5}
-                        backgroundColor={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        backgroundColor={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         />
                         <Text 
                         fontSize={16} 
                         fontWeight="600"
-                        color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                        color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                         >
-                        {mockTransaction.type === 'EXPENSE' ? 'Expense' : 'Income'}
+                        {transaction.type === 'EXPENSE' ? 'Expense' : 'Income'}
                         </Text>
                     </XStack>
                     </YStack>
@@ -196,7 +211,7 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
             <TouchableOpacity style={{ flex: 1 }}>
                 <XStack
                 backgroundColor="white"
-                borderColor={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                borderColor={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
                 borderWidth={1.5}
                 borderRadius={16}
                 height={56}
@@ -204,9 +219,9 @@ export const ScreenContent = ({ id, transaction }: TransactionDetailProps) => {
                 justifyContent="center"
                 space="$2"
                 >
-                <TrashIcon size={20} color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
+                <TrashIcon size={20} color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
                 <Text 
-                    color={mockTransaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
+                    color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
                     fontWeight="700" 
                     fontSize={16}
                 >

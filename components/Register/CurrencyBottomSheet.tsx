@@ -1,7 +1,7 @@
 import React, { forwardRef, useMemo, useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetView } from '@gorhom/bottom-sheet';
-import { XMarkIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
+import { XMarkIcon } from 'react-native-heroicons/outline';
 import { FlatList } from 'react-native-gesture-handler';
 import { 
   View, 

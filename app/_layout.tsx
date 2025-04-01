@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { ApolloProvider } from '@apollo/client';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Slot, useRouter, useSegments } from "expo-router";
+import { View } from 'tamagui';
 
 import { client } from '../apollo/client';
 import config from '../tamagui.config';
@@ -44,7 +45,12 @@ function RootLayoutNav() {
     }
   }, [isAuthenticated, segments]);
 
-  return <Slot />;
+  // Wrap Slot in a View with explicit background color
+  return (
+    <View flex={1} backgroundColor="white">
+      <Slot />
+    </View>
+  );
 }
 
 export default function Layout() {
