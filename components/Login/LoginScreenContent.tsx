@@ -30,7 +30,6 @@ export const ScreenContent = () => {
       const { access_token, user } = data.login;
       await AsyncStorage.setItem('auth_token', access_token);
       login(access_token, user);
-      console.log(access_token, user);
       
       router.replace('/(authenticated)/(tabs)');
     },

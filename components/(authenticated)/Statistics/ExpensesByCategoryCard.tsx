@@ -1,7 +1,9 @@
-import { Card, Separator, XStack, YStack, Text, View } from "tamagui"
+import { Card, Separator, XStack, YStack, Text, View, Spinner } from "tamagui"
 import { ChartPieIcon } from "react-native-heroicons/outline"
 import { PieChart } from "react-native-gifted-charts"
 import { useState, useEffect } from "react"
+import { ExpenseByCategory } from "~/apollo/types"
+import { CHART_COLORS } from "~/constants/chart_colors"
 
 interface PieChartDataItem {
     value: number
@@ -10,51 +12,36 @@ interface PieChartDataItem {
     label: string
 }
 
-export const ExpensesByCategoryCard = () => {
-    const COLORS = [
-        "#4361EE",
-        "#3A0CA3",
-        "#7209B7",
-        "#F72585",
-        "#4CC9F0",
-        "#480CA8",
-        "#560BAD",
-        "#B5179E",
-        "#F25C54",
-        "#F7B267",
-    ]
+interface ExpensesByCategoryCardProps {
+    expensesByCategory?: ExpenseByCategory[];
+    isLoading?: boolean;
+}
 
-    const MOCK_DATA = {
-        expensesByCategory: [
-            { categoryId: "1", categoryName: "Rent", amount: 1850 },
-            { categoryId: "2", categoryName: "Food", amount: 450 },
-            { categoryId: "3", categoryName: "Transport", amount: 200 },
-            { categoryId: "4", categoryName: "Entertainment", amount: 350 },
-            { categoryId: "5", categoryName: "Health", amount: 120 },
-            { categoryId: "6", categoryName: "Others", amount: 380 },
-        ],
-    }
-
+export const ExpensesByCategoryCard = ({ expensesByCategory, isLoading = false }: ExpensesByCategoryCardProps) => {
     const [pieChartData, setPieChartData] = useState<PieChartDataItem[]>([])
     const [totalExpenses, setTotalExpenses] = useState(0)
 
     useEffect(() => {
-        const categories = MOCK_DATA.expensesByCategory
-        const total = categories.reduce((sum, cat) => sum + cat.amount, 0)
-        setTotalExpenses(total)
+        if (expensesByCategory && expensesByCategory.length > 0) {
+            const total = expensesByCategory.reduce((sum, cat) => sum + cat.amount, 0)
+            setTotalExpenses(total)
 
-        const chartData = categories.map((category, index) => {
-            const percentage = total > 0 ? Math.round((category.amount / total) * 100) : 0
-            return {
-                value: category.amount,
-                color: COLORS[index % COLORS.length],
-                text: `${percentage}%`,
-                label: category.categoryName,
-            }
-        })
+            const chartData = expensesByCategory.map((category, index) => {
+                const percentage = total > 0 ? Math.round((category.amount / total) * 100) : 0
+                return {
+                    value: category.amount,
+                    color: CHART_COLORS[index % CHART_COLORS.length],
+                    text: `${percentage}%`,
+                    label: category.categoryName,
+                }
+            })
 
-        setPieChartData(chartData)
-    }, [])
+            setPieChartData(chartData)
+        } else {
+            setPieChartData([])
+            setTotalExpenses(0)
+        }
+    }, [expensesByCategory])
 
     return (
         <Card borderRadius={16} backgroundColor="white" marginBottom="$4">
@@ -68,7 +55,15 @@ export const ExpensesByCategoryCard = () => {
             </Card.Header>
             <Separator />
             <Card.Footer padding="$4">
-                {pieChartData.length > 0 ? (
+                {isLoading ? (
+                    <YStack height={200} justifyContent="center" alignItems="center">
+                        <Spinner size="large" color="#4361EE" />
+                    </YStack>
+                ) : !expensesByCategory || expensesByCategory.length === 0 ? (
+                    <YStack height={200} justifyContent="center" alignItems="center">
+                        <Text color="#666">No expense data available</Text>
+                    </YStack>
+                ) : (
                     <YStack space="$4" alignItems="center" width="100%">
                         <PieChart
                             data={pieChartData}
@@ -80,7 +75,7 @@ export const ExpensesByCategoryCard = () => {
                             textSize={12}
                             centerLabelComponent={() => (
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                    <Text style={{ fontSize: 22, fontWeight: "bold", color: "#333" }}>{totalExpenses}€</Text>
+                                    <Text style={{ fontSize: 22, fontWeight: "bold", color: "#333" }}>{totalExpenses}</Text>
                                     <Text style={{ fontSize: 14, color: "#666" }}>Total</Text>
                                 </View>
                             )}
@@ -100,10 +95,6 @@ export const ExpensesByCategoryCard = () => {
                                 </XStack>
                             ))}
                         </YStack>
-                    </YStack>
-                ) : (
-                    <YStack height={200} justifyContent="center" alignItems="center">
-                        <Text color="#666">Loading data...</Text>
                     </YStack>
                 )}
             </Card.Footer>

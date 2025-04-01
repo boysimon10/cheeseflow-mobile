@@ -1,15 +1,29 @@
-import { YStack, Theme,  Text, XStack, ScrollView} from 'tamagui';
+import { YStack, Theme, Text, XStack, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { SummaryCard } from './SummaryCard';
 import { ExpensesByCategoryCard } from './ExpensesByCategoryCard';
-
+import { useQuery } from '@apollo/client';
+import { 
+    GET_EXPENSES_BY_CATEGORY_QUERY,
+    GET_CURRENT_MONTH_HISTORY_QUERY
+} from '~/apollo/mutations';
+import { 
+    GetExpensesByCategoryResponse,
+    GetCurrentMonthHistoryResponse
+} from '~/apollo/types';
 
 export const ScreenContent = () => {
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+    
+    const { data: monthHistoryData, loading: historyLoading } = useQuery<GetCurrentMonthHistoryResponse>(GET_CURRENT_MONTH_HISTORY_QUERY);
+    
+    const { data: expensesByCategoryData, loading: categoriesLoading } = useQuery<GetExpensesByCategoryResponse>(GET_EXPENSES_BY_CATEGORY_QUERY);
+    
+    const currentMonthData = monthHistoryData?.currentMonthHistory;
     
     return (
         <Theme name="light">
@@ -39,8 +53,16 @@ export const ScreenContent = () => {
                     }}
                     >
                         <YStack space="$1">
-                                <SummaryCard />
-                                <ExpensesByCategoryCard />
+                            <SummaryCard 
+                                monthlyExpenses={currentMonthData?.expenses} 
+                                monthlyIncomes={currentMonthData?.incomes}
+                                balance={currentMonthData?.balance}
+                                isLoading={historyLoading}
+                            />
+                            <ExpensesByCategoryCard 
+                                expensesByCategory={expensesByCategoryData?.expensesByCategory}
+                                isLoading={categoriesLoading}
+                            />
                         </YStack>
                     </ScrollView>
                 </YStack>

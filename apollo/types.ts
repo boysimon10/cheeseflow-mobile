@@ -1,4 +1,3 @@
-// Input types
 export type LoginUserInput = {
     email: string;
     password: string;
@@ -13,14 +12,14 @@ export type CreateUserInput = {
 }
 
 export type TransactionFilterInput = {
-  startDate?: string;
-  endDate?: string;
-  type?: string;
-  categoryId?: string;
-  limit?: number;
+    startDate?: string;
+    endDate?: string;
+    type?: string;
+    categoryId?: string;
+    limit?: number;
 }
 
-// Response types
+
 export type User = {
     id: string;
     name: string;
@@ -54,13 +53,12 @@ export type Transaction = {
     category: Category;
 }
 
-// Mutation response types
 export type LoginResponse = {
     access_token: string;
     user: User;
 }
 
-// Query response types
+
 export type GetProfileResponse = {
     profile: User;
 }
@@ -81,7 +79,7 @@ export type GetTransactionResponse = {
     transaction: Transaction;
 }
 
-// Mutation variables types
+
 export type LoginMutationVariables = {
     loginInput: LoginUserInput;
 }
@@ -90,8 +88,49 @@ export type CreateUserMutationVariables = {
     createUserInput: CreateUserInput;
 }
 
-// Query variables types
+
 export type GetTransactionsQueryVariables = {
     filters?: TransactionFilterInput;
 }
 
+export type GetCategoryQueryVariables = {
+    id: number;
+}
+
+export type GetTransactionQueryVariables = {
+    id: number;
+}
+
+
+export type GetCategoriesResponse = {
+    categories: Category[];
+}
+
+export type GetMonthlyExpensesResponse = {
+    monthlyExpenses: number;
+}
+
+export type GetMonthlyIncomesResponse = {
+    monthlyIncomes: number;
+}
+
+export type ExpenseByCategory = {
+    categoryId: string;
+    categoryName: string;
+    amount: number;
+}
+
+export type GetExpensesByCategoryResponse = {
+    expensesByCategory: ExpenseByCategory[];
+}
+
+export type MonthHistory = {
+    month: string;
+    expenses: number;
+    incomes: number;
+    balance: number;
+}
+
+export type GetCurrentMonthHistoryResponse = {
+    currentMonthHistory: MonthHistory;
+}

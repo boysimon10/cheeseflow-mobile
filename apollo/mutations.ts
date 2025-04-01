@@ -42,11 +42,44 @@ export const GET_PROFILE_QUERY = gql`
   }
 `;
 
-export const GET_BALANCE_QUERY =gql `
+export const GET_BALANCE_QUERY = gql`
   query GetBalance {
     balance
   }
-`
+`;
+
+export const GET_MONTHLY_EXPENSES_QUERY = gql`
+  query GetMonthlyExpenses {
+    monthlyExpenses
+  }
+`;
+
+export const GET_MONTHLY_INCOMES_QUERY = gql`
+  query GetMonthlyIncomes {
+    monthlyIncomes
+  }
+`;
+
+export const GET_EXPENSES_BY_CATEGORY_QUERY = gql`
+  query GetExpensesByCategory {
+    expensesByCategory {
+      categoryId
+      categoryName
+      amount
+    }
+  }
+`;
+
+export const GET_CURRENT_MONTH_HISTORY_QUERY = gql`
+  query GetCurrentMonthHistory {
+    currentMonthHistory {
+      month
+      expenses
+      incomes
+      balance
+    }
+  }
+`;
 
 export const GET_TRANSACTIONS_QUERY = gql`
   query GetTransactions($filters: TransactionFilterInput) {
