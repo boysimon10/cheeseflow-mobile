@@ -2,7 +2,6 @@ import { YStack, Theme,  Text, XStack, ScrollView} from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
-//import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 import { SummaryCard } from './SummaryCard';
 import { ExpensesByCategoryCard } from './ExpensesByCategoryCard';
 
@@ -16,8 +15,8 @@ export const ScreenContent = () => {
         <Theme name="light">
             <YStack flex={1} space={minSpacing}>
                 <XStack
-                    paddingHorizontal="$3"
-                    paddingTop="$6"
+                    paddingHorizontal="$4"
+                    paddingTop="$8"
                     paddingBottom="$3"
                     justifyContent="space-between"
                     alignItems="center"

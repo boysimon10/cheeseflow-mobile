@@ -22,13 +22,15 @@ export const ScreenContent = () => {
     
     return (
         <Theme name="light">
-            <YStack flex={1} paddingHorizontal="$4" space={minSpacing}>
+            <YStack flex={1} space={minSpacing}>
                 <XStack
-                    paddingTop="$6"
+                    paddingTop="$8"
                     paddingBottom="$2"
                     justifyContent="space-between"
                     alignItems="center"
                     width="100%"
+                    backgroundColor={"white"}
+                    paddingHorizontal="$4"
                 >
                     <Text
                         fontSize={30}
@@ -38,6 +40,10 @@ export const ScreenContent = () => {
                         Profile
                     </Text>
                 </XStack>
+
+                <YStack
+                paddingHorizontal="$4"
+                >
                 
                 <ScrollView 
                 showsVerticalScrollIndicator={false}
@@ -182,6 +188,7 @@ export const ScreenContent = () => {
                         </YStack>
                     </YStack>
                 </ScrollView>
+                </YStack>
             </YStack>
         </Theme>
     );

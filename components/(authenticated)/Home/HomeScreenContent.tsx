@@ -32,7 +32,7 @@ export const ScreenContent = () => {
     } = useQuery<GetTransactionsResponse, { filters?: TransactionFilterInput }>(GET_TRANSACTIONS_QUERY, {
         variables: {
             filters: {
-                limit: 5
+                limit: 4
             }
         }
     });
@@ -55,13 +55,15 @@ export const ScreenContent = () => {
     
     return (
     <Theme name="light">
-        <YStack flex={1} paddingHorizontal="$4" space={minSpacing}>
+        <YStack flex={1} space={minSpacing}>
             <XStack
-                paddingTop="$6"
+                paddingTop="$8"
+                paddingHorizontal="$4"
                 paddingBottom="$2"
                 justifyContent="space-between"
                 alignItems="center"
                 width="100%"
+                backgroundColor={"white"}
             >
                 <YStack>
                     <Text
@@ -88,9 +90,13 @@ export const ScreenContent = () => {
                     }}
                 onPress={() => {Haptics.selectionAsync();}}
                 >
-                    <MagnifyingGlassIcon size={25} color="#4b61dc" />
+                    <MagnifyingGlassIcon size={24} color="#4b61dc" />
                 </TouchableOpacity>
             </XStack>
+            <YStack
+            paddingHorizontal={"$4"}
+
+            >
             <ScrollView 
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
@@ -105,7 +111,7 @@ export const ScreenContent = () => {
                     />
                 }
             >
-            <YStack paddingTop="$2">
+            <YStack paddingTop="$3">
                 <BalanceCard balance={balance}/>
 
                 <YStack space={6}>
@@ -145,6 +151,7 @@ export const ScreenContent = () => {
                 </YStack>
             </YStack>
             </ScrollView>
+            </YStack>
         </YStack>
     </Theme>
     );
