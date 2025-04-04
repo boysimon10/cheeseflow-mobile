@@ -3,9 +3,10 @@ import { Stack, useRouter } from 'expo-router';
 import { YStack, Theme, Text, XStack, View, Button, Input, ScrollView, Separator } from 'tamagui';
 import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import {  XMarkIcon, ArrowLongLeftIcon } from 'react-native-heroicons/outline';
+import { XMarkIcon, ArrowLongLeftIcon, CalendarIcon } from 'react-native-heroicons/outline';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTransactionStore } from '~/store/useTransactionStore';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type Category = {
   id: number;
@@ -35,6 +36,8 @@ export const ModalContent = ()=> {
         reset 
     } = useTransactionStore();
     const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const router = useRouter();
     const { top, bottom } = useSafeAreaInsets();
 
@@ -71,14 +74,22 @@ export const ModalContent = ()=> {
         amount: parseFloat(amount),
         description: description.trim(),
         type,
-        categoryId
+        categoryId,
+        date: date.toISOString() // Ajout de la date
     };
 
     console.log('Submitting transaction:', createTransactionInput);
     
-
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
+    };
+
+    const onDateChange = (event: any, selectedDate?: Date) => {
+        setShowDatePicker(Platform.OS === 'ios');
+        if (selectedDate) {
+            setDate(selectedDate);
+            Haptics.selectionAsync();
+        }
     };
 
     const getSelectedCategory = () => {
@@ -214,6 +225,45 @@ export const ModalContent = ()=> {
                     value={description}
                     onChangeText={setDescription}
                     />
+                </YStack>
+
+                {/* Date Picker */}
+                <YStack space="$2" marginBottom="$4">
+                    <Text fontSize={16} fontWeight="500" color="#4b61dc">Date</Text>
+                    <TouchableOpacity
+                        onPress={() => setShowDatePicker(true)}
+                    >
+                        <XStack 
+                            backgroundColor="white"
+                            borderWidth={1}
+                            borderColor="#E2E8F0"
+                            height={50}
+                            paddingHorizontal={16}
+                            borderRadius={8}
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Text fontSize={16} color="#333">
+                                {date.toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                })}
+                            </Text>
+                            <CalendarIcon size={20} color="#4b61dc" />
+                        </XStack>
+                    </TouchableOpacity>
+                    
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={date}
+                            mode="date"
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            onChange={onDateChange}
+                            maximumDate={new Date()}
+                            style={{ marginTop: 10 }}
+                        />
+                    )}
                 </YStack>
                 
                 {/* Category Selection */}

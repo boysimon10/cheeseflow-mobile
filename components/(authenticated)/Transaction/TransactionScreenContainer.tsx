@@ -1,17 +1,17 @@
 import { YStack, XStack, Theme, Text, View, ScrollView } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {  TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLongLeftIcon } from "react-native-heroicons/outline";
 import { PencilIcon, TrashIcon } from "react-native-heroicons/solid";
-import { useQuery } from '@apollo/client';
-import { GET_TRANSACTION_QUERY } from '~/apollo/mutations';
-import { Transaction, GetTransactionResponse } from '~/apollo/types';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_TRANSACTION_QUERY, DELETE_TRANSACTION_MUTATION } from '~/apollo/mutations';
+import { GetTransactionResponse, DeleteTransactionMutationVariables } from '~/apollo/types';
 import { format, parseISO } from 'date-fns';
 import { useAuthStore } from '~/store/authStore';
 
 type TransactionDetailProps = {
-    id: string | string[];
+    id: string;
 };
 
 export const ScreenContent = ({ id }: TransactionDetailProps) => {
@@ -20,6 +20,24 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
     const { user } = useAuthStore();
     const currency = user?.currency || 'XOF';
     
+    const [deleteTransaction, { loading: deleteLoading }] = useMutation<
+        { deleteTransaction: { id: string } },
+        DeleteTransactionMutationVariables
+    >(DELETE_TRANSACTION_MUTATION, {
+        onCompleted: () => {
+            router.push('/transactions');
+        },
+        onError: (error) => {
+            Alert.alert('Error', 'Failed to delete transaction: ' + error.message);
+        },
+        update: (cache, { data }) => {
+            if (data?.deleteTransaction) {
+                cache.evict({ id: `Transaction:${data.deleteTransaction.id}` });
+                cache.gc();
+            }
+        }
+    });
+    
     const { loading, error, data } = useQuery<GetTransactionResponse>(
         GET_TRANSACTION_QUERY,
         {
@@ -27,6 +45,25 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
             fetchPolicy: 'network-only',
         }
     );
+    
+    const handleDeleteTransaction = () => {
+        Alert.alert(
+            'Delete Transaction',
+            'Are you sure you want to delete this transaction?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                    text: 'Delete', 
+                    style: 'destructive',
+                    onPress: () => {
+                        deleteTransaction({
+                            variables: { id: parseFloat(id as string) }
+                        });
+                    }
+                }
+            ]
+        );
+    };
     
     if (loading) {
         return (
@@ -208,25 +245,36 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
                 </XStack>
             </TouchableOpacity>
             
-            <TouchableOpacity style={{ flex: 1 }}>
+            <TouchableOpacity 
+                style={{ flex: 1 }} 
+                onPress={handleDeleteTransaction}
+                disabled={deleteLoading}
+            >
                 <XStack
                 backgroundColor="white"
-                borderColor={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"}
+                borderColor="#dc4b4b"
                 borderWidth={1.5}
                 borderRadius={16}
                 height={56}
                 alignItems="center"
                 justifyContent="center"
                 space="$2"
+                opacity={deleteLoading ? 0.7 : 1}
                 >
-                <TrashIcon size={20} color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} />
-                <Text 
-                    color={transaction.type === 'EXPENSE' ? "#dc4b4b" : "#4bdc7d"} 
-                    fontWeight="700" 
-                    fontSize={16}
-                >
-                    Delete
-                </Text>
+                {deleteLoading ? (
+                    <ActivityIndicator size="small" color="#dc4b4b" />
+                ) : (
+                    <>
+                    <TrashIcon size={20} color="#dc4b4b" />
+                    <Text 
+                        color="#dc4b4b"
+                        fontWeight="700" 
+                        fontSize={16}
+                    >
+                        Delete
+                    </Text>
+                    </>
+                )}
                 </XStack>
             </TouchableOpacity>
             </XStack>

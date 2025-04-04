@@ -11,7 +11,7 @@ import { GetCategoryResponse, Category } from '~/apollo/types';
 type CategoryType = 'EXPENSE' | 'INCOME';
 
 type CategoryDetailProps = {
-    id: string | string[];
+    id: string;
 };
 
 export const ScreenContent = ({ id }: CategoryDetailProps) => {
