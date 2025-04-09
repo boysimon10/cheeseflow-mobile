@@ -14,38 +14,57 @@ interface AuthState {
     token: string | null;
     user: User | null;
     isAuthenticated: boolean;
+    tokenExpiration: number | null;
     login: (token: string, user: User) => void;
+    updateUserProfile: (user: User) => void;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             token: null,
             user: null,
             isAuthenticated: false,
+            tokenExpiration: null,
             
-            login: (token, user) => set({ 
-                token, 
-                user,
-                isAuthenticated: true 
-            }),
+            login: (token, user) => {
+                const expirationDate = Date.now() + (30 * 24 * 60 * 60 * 1000);
+                
+                set({ 
+                    token, 
+                    user,
+                    isAuthenticated: true,
+                    tokenExpiration: expirationDate
+                });
+            },
+            
+            updateUserProfile: (user) => set((state) => ({
+                user: { ...state.user, ...user }
+            })),
             
             logout: async () => {
                 await AsyncStorage.removeItem('auth_token');
                 set({ 
                     token: null,
                     user: null,
-                    isAuthenticated: false 
+                    isAuthenticated: false,
+                    tokenExpiration: null
                 });
                 router.replace('/login');
             },
 
             checkAuth: async () => {
                 const token = await AsyncStorage.getItem('auth_token');
-                if (token) {
-                    set({ token, isAuthenticated: true });
+                const state = get();
+                
+                if (token && state.tokenExpiration) {
+                    if (Date.now() < state.tokenExpiration) {
+                        set({ token, isAuthenticated: true });
+                    } else {
+                        get().logout();
+                    }
                 }
             }
         }),

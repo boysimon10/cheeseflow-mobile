@@ -1,24 +1,53 @@
 import { YStack, H2, Separator, Theme, Image, Paragraph, View, Text, XStack, ScrollView } from 'tamagui';
 import { Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Dimensions } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 import { ArrowLeftOnRectangleIcon, UserIcon, CurrencyDollarIcon, CogIcon, ChevronRightIcon } from 'react-native-heroicons/outline';
 import { TouchableOpacity } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useAuthStore } from '~/store/authStore';
 import { GET_PROFILE_QUERY } from '~/apollo/mutations';
 import { useQuery } from '@apollo/client';
+import { GetProfileResponse } from '~/apollo/types';
+import { useState, useCallback, useEffect } from 'react';
 
 export const ScreenContent = () => {
     const { bottom, top } = useSafeAreaInsets();
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const { logout } = useAuthStore();
+    const { logout, user, updateUserProfile } = useAuthStore();
 
-    const { data: userData, loading: userLoading, refetch: userRefetch } = useQuery(GET_PROFILE_QUERY);
-    const user = userData?.profile || null;
+    
+    const { 
+        data: userData, 
+        loading: userLoading, 
+        refetch: userRefetch 
+    } = useQuery<GetProfileResponse>(GET_PROFILE_QUERY, {
+        skip: !!user, 
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'cache-first'
+    });
 
+    useEffect(() => {
+        if (userData?.profile) {
+            updateUserProfile(userData.profile);
+        }
+    }, [userData, updateUserProfile]);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        
+        try {
+            await userRefetch();
+        } catch (error) {
+            console.error('Error refreshing profile data:', error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [userRefetch]);
     
     return (
         <Theme name="light">
@@ -50,6 +79,14 @@ export const ScreenContent = () => {
                 contentContainerStyle={{
                     paddingBottom: 100,
                 }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#4b61dc"
+                        colors={["#4b61dc"]}
+                    />
+                }
                 >
                     <YStack space="$4" paddingTop="$4">
                         {/* Profile Header */}
@@ -73,7 +110,6 @@ export const ScreenContent = () => {
                             
                             <Text fontSize={20} fontWeight="700" color="#4b61dc">{user?.name}</Text>
                             <Text fontSize={16} color="#4b61dc">{user?.email}</Text>
-                            {/* <Text fontSize={14} color="#4b61dc">+221 77 456 789</Text> */}
                         </YStack>
 
                         {/* Profile Settings */}
