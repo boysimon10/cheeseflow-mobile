@@ -7,21 +7,16 @@ import { XMarkIcon, ArrowLongLeftIcon, CalendarIcon } from 'react-native-heroico
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTransactionStore } from '~/store/useTransactionStore';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_TRANSACTION_MUTATION, GET_CATEGORIES_QUERY } from '~/apollo/mutations';
+import { 
+  CreateTransactionInput, 
+  CreateTransactionMutationVariables, 
+  TransactionType,
+  GetCategoriesResponse,
+  Category
+} from '~/apollo/types';
 
-type Category = {
-  id: number;
-  name: string;
-  emoji: string;
-  type: 'EXPENSE' | 'INCOME';
-};
-
-const MOCK_CATEGORIES: Category[] = [
-  { id: 1, name: "Alimentation", emoji: "🍔", type: "EXPENSE" },
-  { id: 2, name: "Salaire", emoji: "💰", type: "INCOME" },
-  { id: 3, name: "Transport", emoji: "🚗", type: "EXPENSE" },
-  { id: 4, name: "Loisirs", emoji: "🎮", type: "EXPENSE" },
-  { id: 5, name: "Freelance", emoji: "💻", type: "INCOME" },
-];
 
 export const ModalContent = ()=> {
     const { 
@@ -40,52 +35,81 @@ export const ModalContent = ()=> {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const router = useRouter();
     const { top, bottom } = useSafeAreaInsets();
+    
+    // Récupérer les catégories depuis l'API
+    const { data: categoriesData, loading: categoriesLoading } = useQuery<GetCategoriesResponse>(
+        GET_CATEGORIES_QUERY
+    );
+    
+    // Mutation pour créer une transaction
+    const [createTransaction, { loading: createLoading }] = useMutation<
+        { createTransaction: { id: string } }, 
+        CreateTransactionMutationVariables
+    >(CREATE_TRANSACTION_MUTATION);
 
     useEffect(() => {
-        const filtered = MOCK_CATEGORIES.filter(category => category.type === type);
-        setFilteredCategories(filtered);
-        
-        if (categoryId !== null) {
-        const currentCategory = MOCK_CATEGORIES.find(cat => cat.id === categoryId);
-        if (currentCategory?.type !== type) {
-            setCategoryId(null);
+        if (categoriesData?.categories) {
+            const filtered = categoriesData.categories.filter(
+                category => category.type === type
+            );
+            setFilteredCategories(filtered);
+            
+            if (categoryId !== null) {
+                const currentCategory = categoriesData.categories.find(
+                    cat => cat.id === String(categoryId)
+                );
+                if (currentCategory?.type !== type) {
+                    setCategoryId(null);
+                }
+            }
         }
+    }, [type, categoriesData]);
+
+    const handleSubmit = async () => {
+        if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+            alert('Please enter a valid amount');
+            return;
         }
-    }, [type]);
 
-    const handleSubmit = () => {
+        if (!description.trim()) {
+            alert('Please enter a description');
+            return;
+        }
 
-    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-        alert('Please enter a valid amount');
-        return;
-    }
+        if (categoryId === null) {
+            alert('Please select a category');
+            return;
+        }
 
-    if (!description.trim()) {
-        alert('Please enter a description');
-        return;
-    }
+        const createTransactionInput: CreateTransactionInput = {
+            amount: parseFloat(amount),
+            description: description.trim(),
+            type: type as TransactionType,
+            categoryId: Number(categoryId),
+            date: date.toISOString()
+        };
 
-    if (categoryId === null) {
-        alert('Please select a category');
-        return;
-    }
-
-    const createTransactionInput = {
-        amount: parseFloat(amount),
-        description: description.trim(),
-        type,
-        categoryId,
-        date: date.toISOString() // Ajout de la date
-    };
-
-    console.log('Submitting transaction:', createTransactionInput);
-    
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    router.back();
+        try {
+            await createTransaction({
+                variables: {
+                    createTransactionInput
+                },
+                refetchQueries: ['GetTransactions']
+            });
+            
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            reset(); 
+            router.back();
+        } catch (error) {
+            console.error('Error creating transaction:', error);
+            alert('Failed to create transaction. Please try again.');
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        }
     };
 
     const onDateChange = (event: any, selectedDate?: Date) => {
-        setShowDatePicker(Platform.OS === 'ios');
+        setShowDatePicker(false);
+        
         if (selectedDate) {
             setDate(selectedDate);
             Haptics.selectionAsync();
@@ -93,20 +117,18 @@ export const ModalContent = ()=> {
     };
 
     const getSelectedCategory = () => {
-        return MOCK_CATEGORIES.find(cat => cat.id === categoryId);
+        return categoriesData?.categories.find(cat => cat.id === String(categoryId));
     };
 
     const formatAmount = (value: string) => {
-
-    const cleanedValue = value.replace(/[^0-9.]/g, '');
-    
-
-    const parts = cleanedValue.split('.');
-    if (parts.length > 2) {
-        return parts[0] + '.' + parts.slice(1).join('');
-    }
-    
-    return cleanedValue;
+        const cleanedValue = value.replace(/[^0-9.]/g, '');
+        
+        const parts = cleanedValue.split('.');
+        if (parts.length > 2) {
+            return parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        return cleanedValue;
     };
 
     return (
@@ -255,6 +277,14 @@ export const ModalContent = ()=> {
                     </TouchableOpacity>
                     
                     {showDatePicker && (
+                        <>
+                        {Platform.OS === 'ios' && (
+                            <XStack justifyContent="flex-end" marginTop="$2" marginBottom="$2">
+                                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                                    <Text color="#4b61dc" fontWeight="500" fontSize={16}>Done</Text>
+                                </TouchableOpacity>
+                            </XStack>
+                        )}
                         <DateTimePicker
                             value={date}
                             mode="date"
@@ -263,6 +293,7 @@ export const ModalContent = ()=> {
                             maximumDate={new Date()}
                             style={{ marginTop: 10 }}
                         />
+                    </>
                     )}
                 </YStack>
                 
@@ -270,8 +301,13 @@ export const ModalContent = ()=> {
                 <YStack space="$2" marginBottom="$4">
                     <Text fontSize={16} fontWeight="500" color="#4b61dc">Category</Text>
                     
+                    {/* Loading state */}
+                    {categoriesLoading && (
+                        <Text color="#666" textAlign="center" paddingVertical="$3">Loading categories...</Text>
+                    )}
+                    
                     {/* Selected Category */}
-                    {categoryId !== null && (
+                    {!categoriesLoading && categoryId !== null && (
                     <XStack marginBottom="$2" alignItems="center" justifyContent="space-between">
                         <XStack alignItems="center" space="$2">
                         <View 
@@ -307,7 +343,7 @@ export const ModalContent = ()=> {
                     )}
                     
                     {/* Category List */}
-                    {categoryId === null && (
+                    {!categoriesLoading && categoryId === null && (
                     <View
                         backgroundColor="white"
                         borderWidth={1}
@@ -321,7 +357,7 @@ export const ModalContent = ()=> {
                             <TouchableOpacity
                                 onPress={() => {
                                 Haptics.selectionAsync();
-                                setCategoryId(category.id);
+                                setCategoryId(Number(category.id));
                                 }}
                             >
                                 <XStack 
@@ -363,7 +399,7 @@ export const ModalContent = ()=> {
                     )}
                     
                     {/* Add Category Button */}
-                    {categoryId === null && filteredCategories.length > 0 && (
+                    {!categoriesLoading && categoryId === null && filteredCategories.length > 0 && (
                     <TouchableOpacity 
                         onPress={() => router.push('/NewCategory')}
                         style={{ marginTop: 8 }}
@@ -384,11 +420,11 @@ export const ModalContent = ()=> {
                     height={50}
                     flex={1}
                     onPress={handleSubmit}
-                    disabled={!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0 || !description.trim() || categoryId === null}
-                    opacity={!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0 || !description.trim() || categoryId === null ? 0.5 : 1}
+                    disabled={createLoading || !amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0 || !description.trim() || categoryId === null}
+                    opacity={(createLoading || !amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0 || !description.trim() || categoryId === null) ? 0.5 : 1}
                     borderRadius={10}
                 >
-                    Save Transaction
+                    {createLoading ? "Saving..." : "Save Transaction"}
                 </Button>
                 </XStack>
             </YStack>

@@ -25,7 +25,7 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
         DeleteTransactionMutationVariables
     >(DELETE_TRANSACTION_MUTATION, {
         onCompleted: () => {
-            router.push('/transactions');
+            router.back();
         },
         onError: (error) => {
             Alert.alert('Error', 'Failed to delete transaction: ' + error.message);
@@ -35,7 +35,8 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
                 cache.evict({ id: `Transaction:${data.deleteTransaction.id}` });
                 cache.gc();
             }
-        }
+        },
+        refetchQueries: ['GetTransactions']
     });
     
     const { loading, error, data } = useQuery<GetTransactionResponse>(

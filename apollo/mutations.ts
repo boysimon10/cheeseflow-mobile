@@ -153,6 +153,7 @@ export const CREATE_TRANSACTION_MUTATION = gql`
       id
       amount
       description
+      date
       type
       categoryId
     }
