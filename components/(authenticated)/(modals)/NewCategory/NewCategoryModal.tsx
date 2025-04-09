@@ -2,10 +2,14 @@ import { Stack, useRouter } from 'expo-router';
 import { YStack, Theme, Text, XStack, View, Button, Input, ScrollView } from 'tamagui';
 import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import {   ArrowLongLeftIcon  } from 'react-native-heroicons/outline';
+import { ArrowLongLeftIcon } from 'react-native-heroicons/outline';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EMOJI_OPTIONS } from '~/constants/emoji_options'
 import { useCategoryStore } from '~/store/useCategoryStore';
+import { useMutation } from '@apollo/client';
+import { CREATE_CATEGORY_MUTATION } from '~/apollo/mutations';
+import { CreateCategoryInput, CreateCategoryMutationVariables, TransactionType } from '~/apollo/types';
+import { useState } from 'react';
 
 export const ModalContent = ()=> {
     const { 
@@ -17,30 +21,52 @@ export const ModalContent = ()=> {
         setType,
         reset 
     } = useCategoryStore();
-        const router = useRouter();
-        const { top } = useSafeAreaInsets();
+    const router = useRouter();
+    const { top } = useSafeAreaInsets();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const [createCategory, { loading, error }] = useMutation<
+        { createCategory: { id: string } }, 
+        CreateCategoryMutationVariables
+    >(CREATE_CATEGORY_MUTATION);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!name.trim()) {
-        alert('Please enter a category name');
-        return;
+            alert('Please enter a category name');
+            return;
         }
 
         if (!emoji) {
-        alert('Please select an emoji');
-        return;
+            alert('Please select an emoji');
+            return;
         }
 
-        const createCategoryInput = {
-        name: name.trim(),
-        emoji,
-        type
+        const createCategoryInput: CreateCategoryInput = {
+            name: name.trim(),
+            emoji,
+            type: type as TransactionType
         };
 
-        console.log('Submitting category:', createCategoryInput);
+        setIsSubmitting(true);
         
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        router.back();
+        try {
+            const { data } = await createCategory({
+                variables: {
+                    createCategoryInput
+                },
+                refetchQueries: ['GetCategories']
+            });
+            
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            reset(); 
+            router.back();
+        } catch (err) {
+            console.error('Error creating category:', err);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            alert('Failed to create category. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleEmojiSelect = (selectedEmoji: string) => {
@@ -78,7 +104,7 @@ export const ModalContent = ()=> {
             <Text fontSize={24} fontWeight="bold" color={"#4b61dc"}>New Category</Text>
             </XStack>
             
-            
+            {/* Form content remains the same */}
             <ScrollView showsVerticalScrollIndicator={false} flex={1} contentContainerStyle={{ paddingBottom: 100 }}>
                 {/* Category Name */}
                 <YStack space="$2" marginBottom="$4">
@@ -205,6 +231,13 @@ export const ModalContent = ()=> {
                     </XStack>
                 </YStack>
                 )}
+                
+                {/* Show error message if any */}
+                {error && (
+                    <Text color="red" marginBottom="$2">
+                        Error: {error.message}
+                    </Text>
+                )}
             </ScrollView>
             
             {/* Submit Button */}
@@ -217,11 +250,11 @@ export const ModalContent = ()=> {
                 height={50}
                 flex={1}
                 onPress={handleSubmit}
-                disabled={!name.trim() || !emoji}
-                opacity={!name.trim() || !emoji ? 0.5 : 1}
+                disabled={!name.trim() || !emoji || isSubmitting}
+                opacity={!name.trim() || !emoji || isSubmitting ? 0.5 : 1}
                 borderRadius={10}
                 >
-                Create Category
+                {isSubmitting ? "Creating..." : "Create Category"}
                 </Button>
             </XStack>
             </YStack>

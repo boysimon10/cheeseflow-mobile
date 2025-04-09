@@ -18,7 +18,6 @@ export const ScreenContent = ({ id }: CategoryDetailProps) => {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
     
-    // GraphQL query to fetch category details
     const { loading, error, data } = useQuery<GetCategoryResponse>(
         GET_CATEGORY_QUERY,
         {
@@ -29,7 +28,6 @@ export const ScreenContent = ({ id }: CategoryDetailProps) => {
         }
     );
     
-    // Show loading state
     if (loading) {
         return (
             <Theme name="light">
@@ -40,7 +38,6 @@ export const ScreenContent = ({ id }: CategoryDetailProps) => {
         );
     }
     
-    // Show error state
     if (error) {
         return (
             <Theme name="light">
@@ -51,10 +48,8 @@ export const ScreenContent = ({ id }: CategoryDetailProps) => {
         );
     }
     
-    // Get category data
     const category = data?.category;
     
-    // If category not found
     if (!category) {
         return (
             <Theme name="light">
