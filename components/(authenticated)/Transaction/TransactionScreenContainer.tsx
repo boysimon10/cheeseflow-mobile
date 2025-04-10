@@ -18,7 +18,7 @@ export const ScreenContent = ({ id }: TransactionDetailProps) => {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
     const { user } = useAuthStore();
-    const currency = user?.currency || 'XOF';
+    const currency = user?.currency;
     
     const [deleteTransaction, { loading: deleteLoading }] = useMutation<
         { deleteTransaction: { id: string } },

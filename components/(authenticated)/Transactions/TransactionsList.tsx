@@ -9,17 +9,18 @@ import * as Haptics from 'expo-haptics';
 import { useAuthStore } from '~/store/authStore';
 import { ApolloError } from '@apollo/client';
 
+type GroupedTransactions = {
+  month: string;
+  data: Transaction[];
+};
+
 type TransactionsListProps = {
   filterType?: string;
   transactions: Transaction[];
   loading: boolean;
   error?: ApolloError;
   refetch: () => void;
-};
-
-type GroupedTransactions = {
-  month: string;
-  data: Transaction[];
+  disableScroll?: boolean;
 };
 
 export const TransactionsList = ({ 
@@ -27,7 +28,8 @@ export const TransactionsList = ({
   transactions, 
   loading, 
   error, 
-  refetch 
+  refetch,
+  disableScroll
 }: TransactionsListProps) => {
   const router = useRouter();
   const { user } = useAuthStore();
@@ -139,6 +141,7 @@ export const TransactionsList = ({
       renderItem={renderGroup}
       keyExtractor={item => item.month}
       showsVerticalScrollIndicator={false}
+      scrollEnabled={!disableScroll} 
       refreshControl={
         <RefreshControl 
           refreshing={loading}
@@ -148,7 +151,7 @@ export const TransactionsList = ({
         />
       }
       contentContainerStyle={{
-        paddingBottom: 100,
+        paddingBottom: disableScroll ? 0 : 100, 
         paddingTop: 10
       }}
     />

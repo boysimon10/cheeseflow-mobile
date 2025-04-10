@@ -10,9 +10,10 @@ type CategoriesListProps = {
   categories: Category[];
   loading: boolean;
   error?: ApolloError;
+  disableScroll?: boolean; 
 };
 
-export const CategoriesList = ({ categories, loading, error }: CategoriesListProps) => {
+export const CategoriesList = ({ categories, loading, error, disableScroll }: CategoriesListProps) => {
   const router = useRouter();
   
   // render a category item
@@ -66,8 +67,9 @@ export const CategoriesList = ({ categories, loading, error }: CategoriesListPro
       renderItem={renderCategory}
       keyExtractor={item => item.id}
       showsVerticalScrollIndicator={false}
+      scrollEnabled={!disableScroll} 
       contentContainerStyle={{
-        paddingBottom: 100,
+        paddingBottom: disableScroll ? 0 : 100,
         paddingTop: 10,
       }}
     />
