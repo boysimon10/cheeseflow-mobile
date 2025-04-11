@@ -9,7 +9,7 @@ export default function Welcome() {
     <>
       <Stack.Screen options={{ headerShown: false }}  />
       <Container>
-        <ScreenContent title="Simplify Your Finances"/>
+        <ScreenContent/>
       </Container>
     </>
   );
