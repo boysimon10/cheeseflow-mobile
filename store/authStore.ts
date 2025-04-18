@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { client } from '../apollo/client';
 
 interface User {
     id: string;
@@ -45,6 +46,9 @@ export const useAuthStore = create<AuthState>()(
             })),
             
             logout: async () => {
+                //await client.resetStore();
+                await client.clearStore();
+                
                 await AsyncStorage.removeItem('auth_token');
                 set({ 
                     token: null,

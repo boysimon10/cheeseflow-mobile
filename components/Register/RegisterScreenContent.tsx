@@ -16,16 +16,29 @@ import {
 import { useRouter } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import CurrencyBottomSheet from '~/components/Register/CurrencyBottomSheet';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { CurrencyType, currencyDescriptions, currencySymbols } from '../../constants/currencies';
+import { useMutation } from '@apollo/client';
+import { CREATE_USER_MUTATION } from '~/apollo/mutations';
+import { CreateUserInput, CreateUserMutationVariables } from '~/apollo/types';
+import { Alert } from 'react-native';
+import { useRegisterStore } from '~/stores/registerStore';
 
 
 export const ScreenContent = () => {
   const { bottom, top } = useSafeAreaInsets();
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType | undefined>(undefined);
-  const [currencyDisplayText, setCurrencyDisplayText] = useState('Select Currency');
+  
+  // Use Zustand store instead of local state
+  const { 
+    name, email, password, confirmPassword, 
+    selectedCurrency, currencyDisplayText, isLoading,
+    setName, setEmail, setPassword, setConfirmPassword,
+    setSelectedCurrency, setCurrencyDisplayText, setIsLoading, resetForm
+  } = useRegisterStore();
+  
+  const [createUser, { loading }] = useMutation(CREATE_USER_MUTATION);
   
   const handleOpenBottomSheet = () => {
     bottomSheetRef.current?.present(); 
@@ -36,6 +49,52 @@ export const ScreenContent = () => {
   const handleSelectCurrency = (currency: CurrencyType) => {
     setSelectedCurrency(currency);
     setCurrencyDisplayText(`${currency} - ${currencyDescriptions[currency]}`);
+  };
+  
+  const handleRegister = async () => {
+    // Validation
+    if (!name || !email || !password || !confirmPassword || !selectedCurrency) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const userInput: CreateUserInput = {
+        name,
+        email,
+        password,
+        currency: selectedCurrency
+      };
+      
+      const { data } = await createUser({
+        variables: {
+          createUserInput: userInput
+        } as CreateUserMutationVariables
+      });
+      
+      if (data?.createUser) {
+        Alert.alert('Success', 'Account created successfully', [
+          { 
+            text: 'OK', 
+            onPress: () => {
+              resetForm();
+              router.replace('/login');
+            } 
+          }
+        ]);
+      }
+    } catch (error) {
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to create account');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,6 +150,8 @@ export const ScreenContent = () => {
               autoCapitalize="words"
               autoCorrect={false}
               icon={<UserIcon size={20} color="#9CA3AF" />}
+              value={name}
+              onChangeText={setName}
             />
             
             <Input
@@ -99,6 +160,8 @@ export const ScreenContent = () => {
               autoCapitalize="none"
               autoCorrect={false}
               icon={<EnvelopeIcon size={20} color="#9CA3AF" />}
+              value={email}
+              onChangeText={setEmail}
             />
             
             {/* Currency Selector */}
@@ -125,6 +188,8 @@ export const ScreenContent = () => {
               autoCapitalize="none"
               autoCorrect={false}
               icon={<LockClosedIcon size={20} color="#9CA3AF" />}
+              value={password}
+              onChangeText={setPassword}
             />
             
             <Input
@@ -133,11 +198,16 @@ export const ScreenContent = () => {
               autoCapitalize="none"
               autoCorrect={false}
               icon={<KeyIcon size={20} color="#9CA3AF" />}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
             />
             
-            <Link href={{ pathname: '/'}} asChild>
-              <Button title="Register" marginBottom={"$4"}/>
-            </Link>
+            <Button 
+              title="Register" 
+              marginBottom={"$4"} 
+              onPress={handleRegister}
+              disabled={isLoading || loading}
+            />
             
             <View paddingBottom={"$4"}>
               <Link href={{ pathname: '/' }} asChild>

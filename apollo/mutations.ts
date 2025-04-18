@@ -23,8 +23,6 @@ export const CREATE_USER_MUTATION = gql`
       email
       phone
       currency
-      createdAt
-      updatedAt
     }
   }
 `;
