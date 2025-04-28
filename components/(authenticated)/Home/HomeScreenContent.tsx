@@ -19,6 +19,7 @@ export const ScreenContent = () => {
     const screenHeight = Dimensions.get('window').height;
     const minSpacing = Math.min(screenHeight * 0.5, -10);
     const { user } = useAuthStore();
+    const currency = user?.currency;
     const [refreshing, setRefreshing] = useState(false);
 
     const { data: balanceData, loading: balanceLoading, refetch: refetchBalance } = useQuery<GetBalanceResponse>(GET_BALANCE_QUERY);
@@ -74,7 +75,7 @@ export const ScreenContent = () => {
                         Hello,
                     </Text>
                     <Text
-                        fontSize={24}
+                        fontSize={20}
                         fontWeight="700"
                         color="#4b61dc"
                     >
@@ -112,7 +113,7 @@ export const ScreenContent = () => {
                 }
             >
             <YStack paddingTop="$3">
-                <BalanceCard balance={balance}/>
+                <BalanceCard balance={balance} currency={currency}/>
 
                 <YStack space={6}>
                     <XStack 

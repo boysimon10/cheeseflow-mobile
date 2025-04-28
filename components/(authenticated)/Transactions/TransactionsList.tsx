@@ -135,6 +135,16 @@ export const TransactionsList = ({
     );
   }
 
+  if (transactions.length === 0) {
+    return (
+      <View flex={1} justifyContent="center" alignItems="center" padding="$4">
+        <Text color="#666" textAlign="center">
+          No transactions found. Create a new transaction to get started.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={groupedTransactions}

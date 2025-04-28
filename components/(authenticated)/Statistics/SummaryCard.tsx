@@ -1,4 +1,5 @@
 import { Card, Separator, XStack, YStack, Text, Spinner } from "tamagui"
+import { ChartBarIcon } from "react-native-heroicons/outline"
 
 interface SummaryCardProps {
     monthlyExpenses?: number;
@@ -17,9 +18,12 @@ export const SummaryCard = ({ monthlyExpenses, monthlyIncomes, balance, isLoadin
             marginVertical="$4"
         >
             <Card.Header paddingVertical="$3" paddingHorizontal="$4">
-                <Text fontSize={18} fontWeight="600" color="#4b61dc">
-                    Current Month Summary
-                </Text>
+                <XStack alignItems="center" space="$2">
+                    <ChartBarIcon size={20} color="#4361EE" />
+                    <Text fontSize={18} fontWeight="600" color="#333">
+                        Current Month Summary
+                    </Text>
+                </XStack>
             </Card.Header>
             <Separator />
             <Card.Footer padding="$4">

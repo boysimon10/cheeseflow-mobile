@@ -6,9 +6,10 @@ import { useRouter } from 'expo-router'
 
 type Props = {
     balance: number;
+    currency?: string;
 };
 
-export const BalanceCard = ({ balance }: Props) => {
+export const BalanceCard = ({ balance, currency }: Props) => {
     const router = useRouter();
     return (
         <XStack
@@ -39,7 +40,7 @@ export const BalanceCard = ({ balance }: Props) => {
                         fontWeight="500"
                         color="#4b61dc"
                     >
-                        XOF
+                        {currency}
                     </Text>
                 </XStack>
             </YStack>

@@ -22,15 +22,14 @@ import { useMutation } from '@apollo/client';
 import { CREATE_USER_MUTATION } from '~/apollo/mutations';
 import { CreateUserInput, CreateUserMutationVariables } from '~/apollo/types';
 import { Alert } from 'react-native';
-import { useRegisterStore } from '~/stores/registerStore';
+import { useRegisterStore } from '~/store/registerStore';
 
 
 export const ScreenContent = () => {
   const { bottom, top } = useSafeAreaInsets();
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  
-  // Use Zustand store instead of local state
+
   const { 
     name, email, password, confirmPassword, 
     selectedCurrency, currencyDisplayText, isLoading,
@@ -167,19 +166,19 @@ export const ScreenContent = () => {
             {/* Currency Selector */}
             <TouchableOpacity 
               activeOpacity={0.8} 
-              onPress={() => {
-                handleOpenBottomSheet();
-                console.log('Currency Selector Pressed');
-              }}
+              onPress={handleOpenBottomSheet}
+              style={{ width: '100%' }}
             >
-              <Input
-                placeholder={currencyDisplayText}
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon={<CurrencyDollarIcon size={20} color="#9CA3AF" />}
-                editable={false}
-                value={currencyDisplayText !== "Select Currency" ? currencyDisplayText : ""}
-              />
+              <View pointerEvents="none">
+                <Input
+                  placeholder={currencyDisplayText}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  icon={<CurrencyDollarIcon size={20} color="#9CA3AF" />}
+                  editable={false}
+                  value={currencyDisplayText !== "Select Currency" ? currencyDisplayText : ""}
+                />
+              </View>
             </TouchableOpacity>
             
             <Input
@@ -210,7 +209,7 @@ export const ScreenContent = () => {
             />
             
             <View paddingBottom={"$4"}>
-              <Link href={{ pathname: '/' }} asChild>
+              <Link href={{ pathname: '/login' }} asChild>
                 <Text color={"#4b61dc"} textAlign='center'>
                   Already have an account? Sign in
                 </Text>

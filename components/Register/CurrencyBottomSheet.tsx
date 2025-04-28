@@ -132,7 +132,7 @@ const CurrencyBottomSheet = forwardRef<BottomSheetModal, CurrencyBottomSheetProp
           handleComponent={null}
           backgroundStyle={{ backgroundColor: "#FFFFFF" }}
         >
-          <BottomSheetView style={{ flex: 1, paddingBottom: 200 }}>
+          <BottomSheetView style={{ flex: 1, paddingBottom: 100 }}>
             <YStack paddingHorizontal={24} flex={1} paddingTop={8}>
               <XStack justifyContent="space-between" alignItems="center" marginBottom={16}>
                 <TitleText>Select Currency</TitleText>

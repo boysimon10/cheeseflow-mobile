@@ -54,7 +54,7 @@ export const ModalContent = ()=> {
                 variables: {
                     createCategoryInput
                 },
-                refetchQueries: ['GetCategories']
+                refetchQueries: ['GetCategories', 'GetExpensesByCategory']
             });
             
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -81,11 +81,6 @@ export const ModalContent = ()=> {
             style={{ flex: 1 }}
         >
         <YStack flex={1} backgroundColor="#fff">
-            <Stack.Screen 
-            options={{ 
-                headerShown: false 
-            }} 
-            />
             
             <YStack paddingTop={top} paddingHorizontal="$4" space="$4" flex={1}>
             {/* Header */}

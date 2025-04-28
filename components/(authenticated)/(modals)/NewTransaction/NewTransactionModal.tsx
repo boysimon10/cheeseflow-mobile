@@ -36,12 +36,10 @@ export const ModalContent = ()=> {
     const router = useRouter();
     const { top, bottom } = useSafeAreaInsets();
     
-    // Récupérer les catégories depuis l'API
     const { data: categoriesData, loading: categoriesLoading } = useQuery<GetCategoriesResponse>(
         GET_CATEGORIES_QUERY
     );
     
-    // Mutation pour créer une transaction
     const [createTransaction, { loading: createLoading }] = useMutation<
         { createTransaction: { id: string } }, 
         CreateTransactionMutationVariables
@@ -94,7 +92,7 @@ export const ModalContent = ()=> {
                 variables: {
                     createTransactionInput
                 },
-                refetchQueries: ['GetTransactions']
+                refetchQueries: ['GetTransactions', 'GetBalance', 'GetCurrentMonthHistory', 'GetExpensesByCategory']
             });
             
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -137,13 +135,7 @@ export const ModalContent = ()=> {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}
         >
-            <YStack flex={1} backgroundColor="#fff">
-            <Stack.Screen 
-                options={{ 
-                headerShown: false 
-                }} 
-            />
-            
+            <YStack flex={1} backgroundColor="#fff">         
             <YStack paddingTop={top} paddingHorizontal="$4" space="$4" flex={1}>
                 {/* Header */}
                 <XStack alignItems="center" paddingVertical="$2" space={10}>
