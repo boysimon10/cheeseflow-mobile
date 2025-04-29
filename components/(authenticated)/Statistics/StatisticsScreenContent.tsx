@@ -56,7 +56,7 @@ export const ScreenContent = () => {
             <YStack flex={1} space={minSpacing}>
                 <XStack
                     paddingHorizontal="$4"
-                    paddingTop="$8"
+                    paddingTop="$9"
                     paddingBottom="$3"
                     justifyContent="space-between"
                     alignItems="center"

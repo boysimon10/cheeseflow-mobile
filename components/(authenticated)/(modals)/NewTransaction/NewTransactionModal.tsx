@@ -106,10 +106,12 @@ export const ModalContent = ()=> {
     };
 
     const onDateChange = (event: any, selectedDate?: Date) => {
-        setShowDatePicker(false);
-        
+        // Ne ferme plus le picker ici pour iOS, seulement pour Android implicitement
+        // setShowDatePicker(false); // <- Supprimer ou commenter cette ligne
+
         if (selectedDate) {
             setDate(selectedDate);
+
             Haptics.selectionAsync();
         }
     };
@@ -272,7 +274,11 @@ export const ModalContent = ()=> {
                         <>
                         {Platform.OS === 'ios' && (
                             <XStack justifyContent="flex-end" marginTop="$2" marginBottom="$2">
-                                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                                <TouchableOpacity onPress={() => {
+                                    // Ferme le picker uniquement quand "Done" est pressé sur iOS
+                                    setShowDatePicker(false);
+                                    Haptics.selectionAsync(); // Retour haptique à la confirmation
+                                }}>
                                     <Text color="#4b61dc" fontWeight="500" fontSize={16}>Done</Text>
                                 </TouchableOpacity>
                             </XStack>
@@ -281,7 +287,7 @@ export const ModalContent = ()=> {
                             value={date}
                             mode="date"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                            onChange={onDateChange}
+                            onChange={onDateChange} // Continue de mettre à jour la date
                             maximumDate={new Date()}
                             style={{ marginTop: 10 }}
                         />

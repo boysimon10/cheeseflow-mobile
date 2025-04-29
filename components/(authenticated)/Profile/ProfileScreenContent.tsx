@@ -53,7 +53,7 @@ export const ScreenContent = () => {
         <Theme name="light">
             <YStack flex={1} space={minSpacing}>
                 <XStack
-                    paddingTop="$8"
+                    paddingTop="$9"
                     paddingBottom="$2"
                     justifyContent="space-between"
                     alignItems="center"
