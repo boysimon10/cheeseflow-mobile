@@ -138,21 +138,26 @@ export const ModalContent = ()=> {
             style={{ flex: 1 }}
         >
             <YStack flex={1} backgroundColor="#fff">         
-            <YStack paddingTop={top} paddingHorizontal="$4" space="$4" flex={1}>
+            <YStack paddingTop="$2" paddingHorizontal="$4" space="$4" flex={1}>
                 {/* Header */}
-                <XStack alignItems="center" paddingVertical="$2" space={10}>
+                <XStack 
+                alignItems="center" 
+                justifyContent='space-between'
+                paddingVertical="$2" 
+                space={10}
+            >
+            <Text fontSize={24} fontWeight="bold" color={"#4b61dc"} >New Transaction</Text>
                 <TouchableOpacity
                 style={{
                     backgroundColor: '#dde3fb',
-                    padding: 12,
+                    padding: 8,
                     borderRadius: 1000,
                     alignSelf: 'flex-start'
                 }}
                 onPress={() => router.back()}
             >
-                <ArrowLongLeftIcon size={25} color="#4b61dc" /> 
+                <XMarkIcon size={25} color="#4b61dc" /> 
             </TouchableOpacity>
-            <Text fontSize={24} fontWeight="bold" color={"#4b61dc"} >New Transaction</Text>
                 </XStack>
                     
                 <ScrollView showsVerticalScrollIndicator={false} flex={1} contentContainerStyle={{ paddingBottom: 100 }}>

@@ -2,7 +2,7 @@ import { Stack, useRouter } from 'expo-router';
 import { YStack, Theme, Text, XStack, View, Button, Input, ScrollView } from 'tamagui';
 import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { ArrowLongLeftIcon } from 'react-native-heroicons/outline';
+import { XMarkIcon } from 'react-native-heroicons/outline';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EMOJI_OPTIONS } from '~/constants/emoji_options'
 import { useCategoryStore } from '~/store/useCategoryStore';
@@ -82,21 +82,26 @@ export const ModalContent = ()=> {
         >
         <YStack flex={1} backgroundColor="#fff">
             
-            <YStack paddingTop={top} paddingHorizontal="$4" space="$4" flex={1}>
+            <YStack paddingTop="$2" paddingHorizontal="$4" space="$4" flex={1}>
             {/* Header */}
-            <XStack alignItems="center" paddingVertical="$2" space={10}>
+            <XStack 
+                alignItems="center" 
+                justifyContent='space-between'
+                paddingVertical="$2" 
+                space={10}
+            >
+            <Text fontSize={24} fontWeight="bold" color={"#4b61dc"}>New Category</Text>
             <TouchableOpacity
                 style={{
                     backgroundColor: '#dde3fb',
-                    padding: 12,
+                    padding: 8,
                     borderRadius: 1000,
                     alignSelf: 'flex-start'
                 }}
                 onPress={() => router.back()}
             >
-                <ArrowLongLeftIcon size={25} color="#4b61dc" /> 
+                <XMarkIcon size={25} color="#4b61dc" /> 
             </TouchableOpacity>
-            <Text fontSize={24} fontWeight="bold" color={"#4b61dc"}>New Category</Text>
             </XStack>
             
             {/* Form content remains the same */}

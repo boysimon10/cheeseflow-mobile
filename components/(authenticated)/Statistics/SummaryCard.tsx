@@ -37,7 +37,7 @@ export const SummaryCard = ({ monthlyExpenses, monthlyIncomes, balance, isLoadin
                             <Text fontSize={13} color="#666">
                                 Expenses
                             </Text>
-                            <Text fontSize={15} fontWeight="700" color="#F72585">
+                            <Text fontSize={15} fontWeight="700" color="#dc4b4b">
                                 {monthlyExpenses} XOF
                             </Text>
                         </YStack>
@@ -45,7 +45,7 @@ export const SummaryCard = ({ monthlyExpenses, monthlyIncomes, balance, isLoadin
                             <Text fontSize={13} color="#666">
                                 Incomes
                             </Text>
-                            <Text fontSize={15} fontWeight="700" color="#4CC9F0">
+                            <Text fontSize={15} fontWeight="700" color="#4bdc7d">
                                 {monthlyIncomes} XOF
                             </Text>
                         </YStack>

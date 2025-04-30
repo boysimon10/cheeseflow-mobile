@@ -5,14 +5,12 @@ export default function ModalLayout() {
     <Stack>
       <Stack.Screen name="NewTransaction" 
         options={{
-          title: "New Transaction",
-          headerShown: false 
+          title: "New Transaction"
         }}
       />
       <Stack.Screen name="NewCategory" 
       options={{
-        title: "New Category",
-        headerShown: false 
+        title: "New Category"
       }}
       />
     </Stack>
