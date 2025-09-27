@@ -7,19 +7,30 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext(async (_, { headers }) => {
+  const token = await AsyncStorage.getItem('auth_token');
 
-    const token = await AsyncStorage.getItem('auth_token');
-
-
-    return {
-        headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-        }
-    };
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
 });
 
 export const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache({
+    typePolicies: {
+      // Configuration pour éviter les warnings Apollo
+    },
+  }),
+  // Suppression des options dépréciées
+  defaultOptions: {
+    watchQuery: {
+      errorPolicy: 'all',
+    },
+    query: {
+      errorPolicy: 'all',
+    },
+  },
 });

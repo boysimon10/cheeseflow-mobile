@@ -67,7 +67,15 @@ export const useAuthStore = create<AuthState>()(
                     if (Date.now() < state.tokenExpiration) {
                         set({ token, isAuthenticated: true });
                     } else {
-                        get().logout();
+                        // Éviter l'appel récursif en appelant logout directement
+                        await AsyncStorage.removeItem('auth_token');
+                        set({ 
+                            token: null,
+                            user: null,
+                            isAuthenticated: false,
+                            tokenExpiration: null
+                        });
+                        router.replace('/login');
                     }
                 }
             }
