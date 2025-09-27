@@ -1,6 +1,6 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { TamaguiProvider } from 'tamagui';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -15,25 +15,25 @@ import config from '../tamagui.config';
 import { useAuthStore } from '~/store/authStore';
 
 function RootLayoutNav() {
-  const { isAuthenticated, checkAuth } = useAuthStore(state => ({
-    token: state.token,
-    isAuthenticated: state.isAuthenticated,
-    checkAuth: state.checkAuth
-  }));
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const checkAuthRef = useRef(useAuthStore.getState().checkAuth);
   const segments = useSegments();
   const router = useRouter();
+
+  // Mettre à jour la référence à chaque render
+  checkAuthRef.current = useAuthStore.getState().checkAuth;
 
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        await checkAuth();
+        await checkAuthRef.current();
       } catch (error) {
         console.error("Erreur lors de la vérification de l'authentification:", error);
       }
     };
     
     verifyAuth();
-  }, [checkAuth]);
+  }, []); // Pas de dépendances pour éviter le cycle infini
 
   useEffect(() => {
     const inAuthGroup = segments[0] === "(authenticated)";
