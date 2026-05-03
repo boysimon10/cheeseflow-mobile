@@ -1,5 +1,8 @@
 # 🧀💸CheeseFlow Mobile App
 
+> **⚠️ Archived Project**
+> This repository is a public archive of CheeseFlow Mobile. The project has been moved to a private repository for continued development. The backend API has also been made private following database migrations and infrastructure updates. This snapshot is shared for reference and portfolio purposes — the app is no longer actively maintained here.
+
 **CheeseFlow** is a personal finance mobile application built with **React Native (Expo)**, **Tamagui**, **Apollo Client**, and **Zustand**. It helps users easily **track income and expenses**, **organize transactions**, and **generate insightful reports** to better understand their financial health.
 
 ## 🚀 Tech Stack
@@ -11,24 +14,26 @@
 
 ## 🔗 Backend Repository
 
-This mobile application is powered by a robust backend API built with NestJS, GraphQL, PostgreSQL, and TypeORM. The backend handles all business logic for tracking income, expenses, and generating reports.
+This mobile application is powered by a backend API built with NestJS, GraphQL, PostgreSQL, and Drizzle ORM. The backend handles all business logic for tracking income, expenses, and generating reports.
 
-👉 [View CheeseFlow API Repository](https://github.com/boysimon10/cheeseflow-api)
+> **Note:** The backend repository has been made private following infrastructure migrations. The link below may not be accessible.
+
+👉 [CheeseFlow API Repository](https://github.com/boysimon10/cheeseflow-api) *(private)*
 
 ## 📱 Screenshots
 
 <div style="display: flex; flex-direction: 'row';">
-  <img src="docs/1.png" alt="Page d'accueil" width=25% />
-  <img src="docs/2.png" alt="Liste des transactions" width=25% />
-  <img src="docs/3.png" alt="Rapports" width=25% />
-  <img src="docs/4.png" alt="Rapports" width=25% />
-  <img src="docs/5.png" alt="Rapports" width=25% />
-  <img src="docs/6.png" alt="Rapports" width=25% />
-  <img src="docs/7.png" alt="Rapports" width=25% />
-  <img src="docs/8.png" alt="Rapports" width=25% />
-  <img src="docs/9.png" alt="Rapports" width=25% />
-  <img src="docs/10.png" alt="Rapports" width=25% />
-  <img src="docs/11.png" alt="Rapports" width=25% />
+  <img src="docs/1.png" alt="Home screen" width=25% />
+  <img src="docs/2.png" alt="Transaction list" width=25% />
+  <img src="docs/3.png" alt="Reports" width=25% />
+  <img src="docs/4.png" alt="Reports" width=25% />
+  <img src="docs/5.png" alt="Reports" width=25% />
+  <img src="docs/6.png" alt="Reports" width=25% />
+  <img src="docs/7.png" alt="Reports" width=25% />
+  <img src="docs/8.png" alt="Reports" width=25% />
+  <img src="docs/9.png" alt="Reports" width=25% />
+  <img src="docs/10.png" alt="Reports" width=25% />
+  <img src="docs/11.png" alt="Reports" width=25% />
 </div>
 
 ## 📲 Features
@@ -77,145 +82,16 @@ This mobile application is powered by a robust backend API built with NestJS, Gr
 - 💳 Add debt tracking and management
 - 📈 Add debt repayment planning and scheduling
 - 📅 Add subscription management and recurring payments
+- 💰 Add budget management with spending limits per category
 
-## 🛠️ Running the App Locally
+## 🛠️ Known Technical Debt
 
-> ⚠️ **Important**: This mobile app requires the CheeseFlow backend API to be running. Please follow these steps in order:
+These improvements were identified but will be addressed in the private continuation of the project:
 
-### 📋 Prerequisites
-
-- **Node.js** (version 18 ou supérieure)
-- **Un gestionnaire de paquets** parmi :
-  - **Bun** (recommandé) - [Installation](https://bun.sh/docs/installation)
-  - **npm** (inclus avec Node.js)
-  - **yarn** - [Installation](https://yarnpkg.com/getting-started/install)
-  - **pnpm** - [Installation](https://pnpm.io/installation)
-- **Expo CLI** (installé automatiquement avec les commandes ci-dessous)
-- **Expo Go app** sur votre téléphone (iOS/Android)
-
-1. **Set up the Backend first**
-   - Clone and configure the backend repository from [CheeseFlow Backend Repository](https://github.com/boysimon10/cheeseflow-api)
-   - Follow the backend setup instructions in its README
-   - Make sure the backend server is running before starting the mobile app
-
-2. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/boysimon10/cheeseflow-mobile.git
-   cd cheeseflow
-   ```
-
-3. **Install dependencies**
-
-   **Avec Bun (recommandé) :**
-
-   ```bash
-   bun install
-   ```
-
-   **Avec npm :**
-
-   ```bash
-   npm install
-   ```
-
-**Avec yarn :**
-
-```bash
-yarn install
-```
-
-**Avec pnpm :**
-
-```bash
-pnpm install
-```
-
-4. **Start the development server**
-
-   **Avec Bun :**
-
-   ```bash
-   bun run start
-   # ou
-   bunx expo start
-   ```
-
-   **Avec npm :**
-
-   ```bash
-   npm run start
-   # ou
-   npx expo start
-   ```
-
-**Avec yarn :**
-
-```bash
-yarn start
-# ou
-yarn expo start
-```
-
-**Avec pnpm :**
-
-```bash
-pnpm start
-# ou
-pnpm exec expo start
-```
-
-5. **Open on your device**  
-   Scan the QR code with the **Expo Go app** (available on iOS and Android) or run it on an emulator.
-
-### 🚀 Autres commandes disponibles
-
-**Avec Bun :**
-
-```bash
-bun run android    # Lancer sur Android
-bun run ios        # Lancer sur iOS
-bun run web        # Lancer sur le web
-bun run lint       # Vérifier le code
-bun run format     # Formater le code
-```
-
-**Avec npm :**
-
-```bash
-npm run android    # Lancer sur Android
-npm run ios        # Lancer sur iOS
-npm run web        # Lancer sur le web
-npm run lint       # Vérifier le code
-npm run format     # Formater le code
-```
-
-**Avec yarn :**
-
-```bash
-yarn android       # Lancer sur Android
-yarn ios           # Lancer sur iOS
-yarn web           # Lancer sur le web
-yarn lint          # Vérifier le code
-yarn format        # Formater le code
-```
-
-**Avec pnpm :**
-
-```bash
-pnpm android       # Lancer sur Android
-pnpm ios           # Lancer sur iOS
-pnpm web           # Lancer sur le web
-pnpm lint          # Vérifier le code
-pnpm format        # Formater le code
-```
+- **GraphQL query optimization** — Some queries are unnecessarily fragmented or duplicated. Refactoring using fragments and nested relationships would reduce over-fetching and improve API efficiency.
+- **Tamagui token adoption** — Theme values (colors, spacing, typography) are currently hardcoded in several places. A full migration to Tamagui's token-based theming system would improve maintainability and consistency.
+- **Strict TypeScript type safety** — Parts of the codebase rely on loose or implicit typing. A stricter TypeScript configuration with well-defined types across the whole codebase is needed.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-
-1. Fork the project
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+This repository is archived and no longer actively maintained. Contributions are not expected, but feel free to fork the project for your own use.
